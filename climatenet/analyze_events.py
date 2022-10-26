@@ -98,7 +98,6 @@ def analyze_events(event_masks_xarray, class_masks_xarray, results_dir):
     global event_type_of_mask # make function visible to pool
     def event_type_of_mask(event_mask, class_mask):
         """Returns a dict mapping from the IDs in event_mask to their type ('tc' or 'ar")"""
-        print('computing event types', flush=True)
         event_type = {} # event type as tring 'ar' or 'tc' per event ID
         for row in range(np.shape(event_mask)[0]):
             for col in range(np.shape(event_mask)[1]):
