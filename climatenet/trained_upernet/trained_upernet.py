@@ -27,8 +27,8 @@ def run(model='upernet', checkpoint_path='', data_dir='', save_dir=''):
 
     upernet.train(train)
     upernet.evaluate(val)
-    upernet.save_model(checkpoint_path + f'trained_{model}')
-    upernet.load_model(checkpoint_path + 'trained_{model}')   
+    upernet.save_model(checkpoint_path + f'{model}_weights.pth')
+    upernet.load_model(checkpoint_path + 'weights-tbd1.pth')   
 
     class_masks = upernet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs

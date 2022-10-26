@@ -25,9 +25,9 @@ def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    cgnet.train(train)
-    cgnet.evaluate(val)
-    cgnet.save_model(checkpoint_path + f'trained_{model}')
+    #cgnet.train(train)
+    #cgnet.evaluate(val)
+    #cgnet.save_model(checkpoint_path + f'trained_{model}')
     cgnet.load_model(checkpoint_path + 'trained_{model}')   
 
     class_masks = cgnet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
