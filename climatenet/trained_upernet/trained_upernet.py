@@ -1,5 +1,5 @@
 from climatenet.utils.data import ClimateDatasetLabeled, ClimateDataset
-from climatenet.models import CGNet
+from climatenet.models.upernet import UperNet
 from climatenet.utils.utils import Config
 from climatenet.track_events import track_events
 from climatenet.analyze_events import analyze_events
@@ -8,9 +8,9 @@ from climatenet.visualize_events import visualize_events
 import traceback
 from os import path
 
-def run(checkpoint_path='', data_dir='', save_dir=''):
-    config = Config('config.json')
-    cgnet = CGNet(config)
+def run(model='upernet', checkpoint_path='', data_dir='', save_dir=''):
+    config = Config(f'climatenet/trained_{model}/{model}_config.json')
+    upernet = UperNet(config)
 
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'
@@ -25,12 +25,12 @@ def run(checkpoint_path='', data_dir='', save_dir=''):
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    # cgnet.train(train)
-    # cgnet.evaluate(val)
-    # cgnet.save_model(checkpoint_path + 'trained_cgnet')
-    cgnet.load_model(checkpoint_path + 'trained_cgnet')   
+    upernet.train(train)
+    upernet.evaluate(val)
+    upernet.save_model(checkpoint_path + f'trained_{model}')
+    upernet.load_model(checkpoint_path + 'trained_{model}')   
 
-    class_masks = cgnet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
+    class_masks = upernet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs
 
     try :

@@ -1,5 +1,6 @@
 import argparse
-import trained_cgnet as trained_cgnet
+import climatenet.trained_cgnet.trained_cgnet as trained_cgnet
+import climatenet.trained_upernet.trained_upernet as trained_upernet
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -8,7 +9,8 @@ if __name__ == "__main__":
         type=str,
         help="Model to use for training.",
         choices=[
-            "trained_cgnet"
+            "cgnet",
+            "upernet"
         ],
     )
     parser.add_argument(
@@ -30,9 +32,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(vars(args))
 
-    if args.model == "trained_cgnet":
+    if args.model == "cgnet":
         print("Running baseline example...")
         trained_cgnet.run(
+            checkpoint_path=args.checkpoint_path,
+            data_dir=args.data_dir,
+            save_dir=args.save_dir
+        )
+    elif args.model == "upernet":
+        print("Running UperNet example...")
+        trained_upernet.run(
             checkpoint_path=args.checkpoint_path,
             data_dir=args.data_dir,
             save_dir=args.save_dir
