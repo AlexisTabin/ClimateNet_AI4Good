@@ -217,9 +217,8 @@ class PSPModule(nn.Module):
 class ResNet(nn.Module):
     def __init__(self, channels=3, output_stride=16, backbone='resnet101', pretrained=True):
         super(ResNet, self).__init__()
-        model = getattr(models, backbone)(pretrained)
-        model = resnet101(pretrained=False)
-        model = torch.load("~/resnet101-5d3b4d8f.pth") #quick fix
+        model = getattr(models, backbone)(pretrained) # if this line crashes, you need to download the pretrained model .pth and put it in ~/.cache/torch/checkpoints/
+        model = torch.load("/home/alexis/resnet101-5d3b4d8f.pth") 
         if not pretrained or channels != 3:
             self.initial = nn.Sequential(
                 nn.Conv2d(channels, 64, 7, stride=2, padding=3, bias=False),
