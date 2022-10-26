@@ -25,10 +25,10 @@ def run(model='upernet', checkpoint_path='', data_dir='', save_dir=''):
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    upernet.train(train)
-    upernet.evaluate(val)
-    upernet.save_model(checkpoint_path + f'{model}_weights.pth')
-    upernet.load_model(checkpoint_path + 'weights-tbd1.pth')   
+    # upernet.train(train)
+    # upernet.evaluate(val)
+    # upernet.save_model(checkpoint_path)
+    upernet.load_model(checkpoint_path)   
 
     class_masks = upernet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs

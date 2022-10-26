@@ -27,8 +27,9 @@ def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
 
     #cgnet.train(train)
     #cgnet.evaluate(val)
-    #cgnet.save_model(checkpoint_path + f'trained_{model}')
-    cgnet.load_model(checkpoint_path + 'trained_{model}')   
+    #cgnet.save_model(checkpoint_path + 'weights-tbd3.pth')
+    cgnet.load_model(checkpoint_path)   
+    upernet.load_model(checkpoint_path)   
 
     class_masks = cgnet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs
