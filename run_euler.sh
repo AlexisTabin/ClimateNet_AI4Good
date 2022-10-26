@@ -2,7 +2,7 @@ cd ~/ClimateNet_AI4Good/
 git pull
 TAG=$(git rev-parse --short HEAD)
 
-rm lsf*
+mv lsf* old_lsf/
 
 # command to run on Euler cluster : 
 # This command took ages
