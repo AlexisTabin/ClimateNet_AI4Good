@@ -2,9 +2,9 @@ source ~/.bashrc
 conda activate climatenet
 
 model="upernet"
-location=local
+location=euler
 
-if (location=euler)
+if [[ $location == euler ]]
 then
 	user="atabin"
     data_folder="/cluster/work/igp_psr/ai4good/group-1b/data/"

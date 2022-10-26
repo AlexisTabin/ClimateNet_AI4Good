@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 from climatenet.base.base_model import BaseModel
-from climatenet.utils.helpers import initialize_weights
+from climatenet.utils.helpers import initialize_weights, set_trainable
 from itertools import chain
 from climatenet.utils.utils import Config
 from climatenet.modules import *
