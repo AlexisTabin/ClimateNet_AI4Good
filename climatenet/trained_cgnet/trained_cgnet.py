@@ -29,7 +29,23 @@ def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
     #cgnet.evaluate(val)
     #cgnet.save_model(checkpoint_path + 'weights-tbd3.pth')
     cgnet.load_model(checkpoint_path)   
-    cgnet.evaluate(inference)
+
+    try :
+        print('evaluating on val set...')
+        cgnet.evaluate(val)
+    except Exception as e:
+        print('Error in evaluating on val set : ', e)
+        traceback.print_exc()
+        
+    try :
+        print('evaluating on test data...')
+        test = ClimateDatasetLabeled(inference_path, config)
+        cgnet.evaluate(test)
+    except Exception as e:
+        print('error in evaluating on test data...')
+        print(e)
+        traceback.print_exc()
+
 
     class_masks = cgnet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs

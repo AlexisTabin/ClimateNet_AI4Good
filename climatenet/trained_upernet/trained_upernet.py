@@ -29,7 +29,22 @@ def run(model='upernet', checkpoint_path='', data_dir='', save_dir=''):
     # upernet.evaluate(val)
     # upernet.save_model(checkpoint_path)
     upernet.load_model(checkpoint_path)   
-    upernet.evaluate(inference)
+
+    try :
+        print('evaluating on val set...')
+        upernet.evaluate(val)
+    except Exception as e:
+        print('Error in evaluating on val set : ', e)
+        traceback.print_exc()
+        
+    try :
+        print('evaluating on test data...')
+        test = ClimateDatasetLabeled(inference_path, config)
+        upernet.evaluate(test)
+    except Exception as e:
+        print('error in evaluating on test data...')
+        print(e)
+        traceback.print_exc()
 
     class_masks = upernet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs
