@@ -20,7 +20,8 @@ from climatenet.utils.utils import Config
 from os import path
 import pathlib
 from torchvision.models import resnet101, resnet
-
+import torch
+torch.cuda.empty_cache()
 
 class UNet():
     def __init__(self, config: Config = None, model_path: str = None):
