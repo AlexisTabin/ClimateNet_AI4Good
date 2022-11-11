@@ -34,11 +34,11 @@ class UNet():
         if config is not None:
             # Create new model
             self.config = config
-            self.network = UNetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
+            self.network = UNetResnetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
         elif model_path is not None:
             # Load model
             self.config = Config(path.join(model_path, 'config.json'))
-            self.network = UNetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
+            self.network = UNetResnetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
             self.network.load_state_dict(torch.load(path.join(model_path, 'weights.pth')))
         else:
             raise ValueError('''You need to specify either a config or a model path.''')
