@@ -20,8 +20,7 @@ from climatenet.utils.utils import Config
 from os import path
 import pathlib
 from torchvision.models import resnet101, resnet
-import torch
-torch.cuda.empty_cache()
+import gc
 
 class UNet():
     def __init__(self, config: Config = None, model_path: str = None):
@@ -47,6 +46,9 @@ class UNet():
         
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
+        print(torch.cuda.memory_summary(device=None, abbreviated=False))
+        torch.cuda.empty_cache()
+        gc.collect()
         self.network.train()
         collate = ClimateDatasetLabeled.collate
         loader = DataLoader(dataset, batch_size=self.config.train_batch_size, collate_fn=collate, num_workers=4, shuffle=True)
