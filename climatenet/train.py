@@ -34,10 +34,10 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
     inference = ClimateDataset(inference_path, config)
 
     
-    # model.train(train)
-    # model.evaluate(val)
-    # model.save_model(checkpoint_path)
-    model.load_model(checkpoint_path)   
+    model.train(train)
+    model.evaluate(val)
+    model.save_model(checkpoint_path)
+    # model.load_model(checkpoint_path)   
 
     try :
         print('evaluating on val set...')
