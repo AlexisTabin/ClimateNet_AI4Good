@@ -17,4 +17,3 @@ mv lsf* old_lsf/
 
 # Trying with twice more memory
 bsub -n 2 -W 12:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" <~/ClimateNet_AI4Good/run.sh
-bsub -n 2 -W 12:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" <~/ClimateNet_AI4Good/run_cgnet.sh
