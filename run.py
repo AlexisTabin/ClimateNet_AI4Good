@@ -1,5 +1,6 @@
 import argparse
 import climatenet.train as train
+from climatenet.train import MODELS
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -7,10 +8,7 @@ if __name__ == "__main__":
         "model",
         type=str,
         help="Model to use for training.",
-        choices=[
-            "cgnet",
-            "upernet"
-        ],
+        choices=list(MODELS.keys()),
     )
     parser.add_argument(
         "--data_dir",

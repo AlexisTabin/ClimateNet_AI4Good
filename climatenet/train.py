@@ -10,7 +10,7 @@ from climatenet.visualize_events import visualize_events
 import traceback
 from os import path
 
-string_to_model = {
+MODELS = {
     'upernet': UperNet,
     'cgnet': CGNet,
     'unet': UNet
@@ -18,7 +18,7 @@ string_to_model = {
 
 def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
     config = Config(f'climatenet/models/{model_name}/{model_name}_config.json')
-    model = string_to_model[model_name](config)
+    model = MODELS[model_name](config)
 
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'
