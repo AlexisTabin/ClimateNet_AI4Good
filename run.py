@@ -1,6 +1,5 @@
 import argparse
-import climatenet.trained_cgnet.trained_cgnet as trained_cgnet
-import climatenet.trained_upernet.trained_upernet as trained_upernet
+import climatenet.train as train
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -32,19 +31,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(vars(args))
 
-    if args.model == "cgnet":
-        print("Running baseline example...")
-        trained_cgnet.run(
-            checkpoint_path=args.checkpoint_path,
-            data_dir=args.data_dir,
-            save_dir=args.save_dir
-        )
-    elif args.model == "upernet":
-        print("Running UperNet example...")
-        trained_upernet.run(
-            checkpoint_path=args.checkpoint_path,
-            data_dir=args.data_dir,
-            save_dir=args.save_dir
-        )
-    else:
-        raise NotImplementedError("Not implemented yet")
+    print(f"Running {args.model}...")
+    train.run(
+        model_name=args.model,
+        checkpoint_path=args.checkpoint_path,
+        data_dir=args.data_dir,
+        save_dir=args.save_dir
+    )

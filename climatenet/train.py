@@ -1,5 +1,7 @@
 from climatenet.utils.data import ClimateDatasetLabeled, ClimateDataset
-from climatenet.models.CGNet.cgnet import CGNet
+from climatenet.models.upernet.upernet import UperNet
+from climatenet.models.cgnet.cgnet import CGNet
+from climatenet.models.unet.unet import UNet
 from climatenet.utils.utils import Config
 from climatenet.track_events import track_events
 from climatenet.analyze_events import analyze_events
@@ -8,9 +10,15 @@ from climatenet.visualize_events import visualize_events
 import traceback
 from os import path
 
-def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
-    config = Config(f'climatenet/trained_{model}/{model}_config.json')
-    cgnet = CGNet(config)
+string_to_model = {
+    'upernet': UperNet,
+    'cgnet': CGNet,
+    'unet': UNet
+}
+
+def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
+    config = Config(f'climatenet/models/{model_name}/{model_name}_config.json')
+    model = string_to_model[model_name](config)
 
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'
@@ -25,14 +33,15 @@ def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    #cgnet.train(train)
-    #cgnet.evaluate(val)
-    #cgnet.save_model(checkpoint_path + 'weights-tbd3.pth')
-    cgnet.load_model(checkpoint_path)   
+    
+    # model.train(train)
+    # model.evaluate(val)
+    # model.save_model(checkpoint_path)
+    model.load_model(checkpoint_path)   
 
     try :
         print('evaluating on val set...')
-        cgnet.evaluate(val)
+        model.evaluate(val)
     except Exception as e:
         print('Error in evaluating on val set : ', e)
         traceback.print_exc()
@@ -40,14 +49,13 @@ def run(model='cgnet', checkpoint_path='', data_dir='', save_dir=''):
     try :
         print('evaluating on test data...')
         test = ClimateDatasetLabeled(inference_path, config)
-        cgnet.evaluate(test)
+        model.evaluate(test)
     except Exception as e:
         print('error in evaluating on test data...')
         print(e)
         traceback.print_exc()
 
-
-    class_masks = cgnet.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
+    class_masks = model.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs
 
     try :

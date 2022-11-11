@@ -13,7 +13,7 @@ then
     checkpoint_path="$scratch_folder/checkpoints/$model/"
 else
 	user="alexis"
-    data_folder="/media/alexis/My\ Passport/ai4good/"
+    data_folder="/media/alexis/MyPassport/ai4good/"
     save_dir="$data_folder/$model/"
     checkpoint_path="$data_folder/checkpoints/$model/"
 fi
