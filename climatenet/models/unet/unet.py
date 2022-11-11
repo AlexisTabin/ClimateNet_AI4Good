@@ -265,7 +265,7 @@ class UNetModule(BaseModel):
 class UNetResnetModule(BaseModel):
     def __init__(self, num_classes, in_channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
         super(UNetResnetModule, self).__init__()
-        model = getattr(resnet, backbone)(pretrained, norm_layer=nn.BatchNorm2d)
+        model = getattr(resnet, backbone)(pretrained)#, norm_layer=nn.BatchNorm2d)
 
         self.initial = list(model.children())[:4]
         if in_channels != 3:
