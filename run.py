@@ -1,6 +1,6 @@
 import argparse
 import climatenet.train as train
-from climatenet.train import MODELS
+from climatenet.models.trainer import MODELS
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

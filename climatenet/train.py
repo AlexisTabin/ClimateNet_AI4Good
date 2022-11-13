@@ -1,24 +1,17 @@
-from climatenet.utils.data import ClimateDatasetLabeled, ClimateDataset
-from climatenet.models.upernet.upernet import UperNet
-from climatenet.models.cgnet.cgnet import CGNet
-from climatenet.models.unet.unet import UNet
-from climatenet.utils.utils import Config
-from climatenet.track_events import track_events
-from climatenet.analyze_events import analyze_events
-from climatenet.visualize_events import visualize_events
-
 import traceback
 from os import path
 
-MODELS = {
-    'upernet': UperNet,
-    'cgnet': CGNet,
-    'unet': UNet
-}
+from climatenet.analyze_events import analyze_events
+from climatenet.models.trainer import MODELS, Trainer
+from climatenet.track_events import track_events
+from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
+from climatenet.utils.utils import Config
+from climatenet.visualize_events import visualize_events
+
 
 def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
     config = Config(f'climatenet/models/{model_name}/{model_name}_config.json')
-    model = MODELS[model_name](config)
+    model = Trainer(config, model_name)
 
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'

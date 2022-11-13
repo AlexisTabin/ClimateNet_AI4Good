@@ -1,154 +1,27 @@
+import gc
+import pathlib
+from itertools import chain
+from os import path
 from pickle import FALSE
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import models
-from climatenet.base.base_model import BaseModel
-from climatenet.utils.helpers import initialize_weights, set_trainable
-from itertools import chain
-from climatenet.utils.utils import Config
-from climatenet.modules import *
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.losses import jaccard_loss
-from climatenet.utils.metrics import get_cm, get_iou_perClass
+import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
+from torchvision import models
+from torchvision.models import resnet, resnet101
 from tqdm import tqdm
-import numpy as np
-import xarray as xr
+
+from climatenet.base.base_model import BaseModel
+from climatenet.modules import *
+from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
+from climatenet.utils.helpers import initialize_weights, set_trainable
+from climatenet.utils.losses import jaccard_loss
+from climatenet.utils.metrics import get_cm, get_iou_perClass
 from climatenet.utils.utils import Config
-from os import path
-import pathlib
-from torchvision.models import resnet101, resnet
-import gc
-
-class UNet():
-    def __init__(self, config: Config = None, model_path: str = None):
-    
-        if config is not None and model_path is not None:
-            raise ValueError('''Config and weight path set at the same time. 
-            Pass a config if you want to create a new model, 
-            and a weight_path if you want to load an existing model.''')
-
-        if config is not None:
-            # Create new model
-            self.config = config
-            self.network = UNetResnetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
-        elif model_path is not None:
-            # Load model
-            self.config = Config(path.join(model_path, 'config.json'))
-            self.network = UNetResnetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
-            self.network.load_state_dict(torch.load(path.join(model_path, 'weights.pth')))
-        else:
-            raise ValueError('''You need to specify either a config or a model path.''')
-
-        self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)        
-        
-    def train(self, dataset: ClimateDatasetLabeled):
-        '''Train the network on the given dataset for the given amount of epochs'''
-        print(torch.cuda.memory_summary(device=None, abbreviated=False))
-        torch.cuda.empty_cache()
-        gc.collect()
-        self.network.train()
-        collate = ClimateDatasetLabeled.collate
-        loader = DataLoader(dataset, batch_size=self.config.train_batch_size, collate_fn=collate, num_workers=4, shuffle=True)
-        for epoch in range(1, self.config.epochs+1):
-
-            print(f'Epoch {epoch}:')
-            epoch_loader = tqdm(loader)
-            aggregate_cm = np.zeros((3,3))
-
-            for features, labels in epoch_loader:
-        
-                # Push data on GPU and pass forward
-                features = torch.tensor(features.values).cuda()
-                labels = torch.tensor(labels.values).cuda()
-                
-                outputs = torch.softmax(self.network(features), 1)
-
-                # Update training CM
-                predictions = torch.max(outputs, 1)[1]
-                aggregate_cm += get_cm(predictions, labels, 3)
-
-                # Pass backward
-                loss = jaccard_loss(outputs, labels)
-                epoch_loader.set_description(f'Loss: {loss.item()}')
-                loss.backward()
-                self.optimizer.step()
-                self.optimizer.zero_grad() 
-
-            print('Epoch stats:')
-            print(aggregate_cm)
-            ious = get_iou_perClass(aggregate_cm)
-            print('IOUs: ', ious, ', mean: ', ious.mean())
-
-    def predict(self, dataset: ClimateDataset, save_dir: str = None):
-        '''Make predictions for the given dataset and return them as xr.DataArray'''
-        self.network.eval()
-        collate = ClimateDataset.collate
-        loader = DataLoader(dataset, batch_size=self.config.pred_batch_size, collate_fn=collate)
-        epoch_loader = tqdm(loader)
-
-        predictions = []
-        for batch in epoch_loader:
-            features = torch.tensor(batch.values).cuda()
-        
-            with torch.no_grad():
-                outputs = torch.softmax(self.network(features), 1)
-            preds = torch.max(outputs, 1)[1].cpu().numpy()
-
-            coords = batch.coords
-            del coords['variable']
-            
-            dims = [dim for dim in batch.dims if dim != "variable"]
-            
-            predictions.append(xr.DataArray(preds, coords=coords, dims=dims, attrs=batch.attrs))
-
-        return xr.concat(predictions, dim='time')
-
-    def evaluate(self, dataset: ClimateDatasetLabeled):
-        '''Evaluate on a dataset and return statistics'''
-        self.network.eval()
-        collate = ClimateDatasetLabeled.collate
-        loader = DataLoader(dataset, batch_size=self.config.pred_batch_size, collate_fn=collate, num_workers=4)
-
-        epoch_loader = tqdm(loader)
-        aggregate_cm = np.zeros((3,3))
-
-        for features, labels in epoch_loader:
-        
-            features = torch.tensor(features.values).cuda()
-            labels = torch.tensor(labels.values).cuda()
-                
-            with torch.no_grad():
-                outputs = torch.softmax(self.network(features), 1)
-            predictions = torch.max(outputs, 1)[1]
-            aggregate_cm += get_cm(predictions, labels, 3)
-
-        print('Evaluation stats:')
-        print(aggregate_cm)
-        ious = get_iou_perClass(aggregate_cm)
-        print('IOUs: ', ious, ', mean: ', ious.mean())
-
-    def save_model(self, save_path: str):
-        '''
-        Save model weights and config to a directory.
-        '''
-        # create save_path if it doesn't exist
-        pathlib.Path(save_path).mkdir(parents=True, exist_ok=True) 
-
-        # save weights and config
-        self.config.save(path.join(save_path, 'config.json'))
-        torch.save(self.network.state_dict(), path.join(save_path, 'weights.pth'))
-
-    def load_model(self, model_path: str):
-        '''
-        Load a model. While this can easily be done using the normal constructor, this might make the code more readable - 
-        we instantly see that we're loading a model, and don't have to look at the arguments of the constructor first.
-        '''
-        self.config = Config(path.join(model_path, 'config.json'))
-        self.network = UNetModule(classes=len(self.config.labels), channels=len(list(self.config.fields))).cuda()
-        self.network.load_state_dict(torch.load(path.join(model_path, 'weights.pth')))
 
 def x2conv(in_channels, out_channels, inner_channels=None):
     inner_channels = out_channels // 2 if inner_channels is None else inner_channels
@@ -198,10 +71,9 @@ class decoder(nn.Module):
         x = self.up_conv(x)
         return x
 
-
-class UNetModule(BaseModel):
+class UNet(BaseModel):
     def __init__(self, num_classes, in_channels=4, freeze_bn=False, **_):
-        super(UNetModule, self).__init__()
+        super(UNet, self).__init__()
 
         self.start_conv = x2conv(in_channels, 64)
         self.down1 = encoder(64, 128)
@@ -258,15 +130,13 @@ class UNetModule(BaseModel):
             if isinstance(module, nn.BatchNorm2d): module.eval()
 
 
-
-
 """
 -> Unet with a resnet backbone
 """
 
-class UNetResnetModule(BaseModel):
+class UNetResnet(BaseModel):
     def __init__(self, num_classes, in_channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
-        super(UNetResnetModule, self).__init__()
+        super(UNetResnet, self).__init__()
         model = getattr(resnet, backbone)(pretrained)#, norm_layer=nn.BatchNorm2d)
 
         self.initial = list(model.children())[:4]
