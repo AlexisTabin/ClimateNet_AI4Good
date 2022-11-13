@@ -92,8 +92,23 @@ def visualize_events(event_masks_xarray, input_data : ClimateDataset, png_dir):
     global spawn # make function visible to pool
     def spawn(i):
         filename = png_dir + f"{i:04d}.png"
-        generatePNG(filename, input_data[int(i/8)].sel(variable="TMQ")[i%8],
-                    event_masks[i])
+        print(f"Type event masks: {type(event_masks)}", flush=True)
+        print(f"Shape event masks: {event_masks.shape}",  flush=True)
+        masks = event_masks[i]
+
+        data = input_data[int(i/8)]
+        print(f"Type data: {type(data)}",  flush=True)
+        print(f"Shape data: {data.shape}", flush=True)
+
+        selected_data = data.sel(variable="TMQ")
+        print(f"Type selected_data: {type(selected_data)}",  flush=True)
+        print(f"Shape selected_data: {selected_data.shape}", flush=True)
+
+        nxt = selected_data[i%8]
+        print(f"Type nxt: {type(nxt)}",  flush=True)
+        print(f"Shape nxt: {nxt.shape}",  flush=True)
+
+        generatePNG(filename, nxt, masks)
 
     # pool = Pool(psutil.cpu_count(logical=False))
     # pool.map(spawn, range(len(event_masks))) # this line is crashing
