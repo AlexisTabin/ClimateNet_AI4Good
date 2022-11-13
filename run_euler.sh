@@ -4,6 +4,10 @@ TAG=$(git rev-parse --short HEAD)
 
 mv lsf* old_lsf/
 
+bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "source $(pwd)/run.sh unet"
+bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "source $(pwd)/run.sh cgnet"
+bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "source $(pwd)/run.sh upernet"
+
 # command to run on Euler cluster : 
 # This command took ages
 # bsub -n 40 -B -N -R "rusage[mem=4500,ngpus_excl_p=8]" -R "select[gpu_model0==GeForceGTX1080Ti]" "python example.py"
@@ -15,9 +19,4 @@ mv lsf* old_lsf/
 # This one lead to out of memory error
 # bsub -n 1 -W 12:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" <~/ClimateNet_AI4Good/run.sh
 
-# Trying with twice more memory
-bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "source $(pwd)/run.sh unet"
-# bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "./~/ClimateNet_AI4Good/run.sh cgnet"
-# bsub -n 4 -W 8:00 -J $TAG -B -N -R "rusage[mem=4096,ngpus_excl_p=8]" -R "select[gpu_mtotal0>=8192]" "./~/ClimateNet_AI4Good/run.sh upernet"
 
-# sbatch --time=08:00:00 --wrap"./~/ClimateNet_AI4Good/run.sh unet"

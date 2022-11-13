@@ -16,11 +16,7 @@ from tqdm import tqdm
 
 from climatenet.base.base_model import BaseModel
 from climatenet.modules import *
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.helpers import initialize_weights, set_trainable
-from climatenet.utils.losses import jaccard_loss
-from climatenet.utils.metrics import get_cm, get_iou_perClass
-from climatenet.utils.utils import Config
 
 
 class UperNet(BaseModel):

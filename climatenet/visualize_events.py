@@ -95,5 +95,9 @@ def visualize_events(event_masks_xarray, input_data : ClimateDataset, png_dir):
         generatePNG(filename, input_data[int(i/8)].sel(variable="TMQ")[i%8],
                     event_masks[i])
 
-    pool = Pool(psutil.cpu_count(logical=False))
-    pool.map(spawn, range(len(event_masks))) # this line is crashing
+    # pool = Pool(psutil.cpu_count(logical=False))
+    # pool.map(spawn, range(len(event_masks))) # this line is crashing
+
+    # Try to do it sequentially
+    for i in range(len(event_masks)):
+        spawn(i)
