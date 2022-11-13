@@ -72,7 +72,7 @@ class decoder(nn.Module):
         return x
 
 class UNet(BaseModel):
-    def __init__(self, num_classes, in_channels=4, freeze_bn=False, **_):
+    def __init__(self, classes, in_channels=4, freeze_bn=False, **_):
         super(UNet, self).__init__()
 
         self.start_conv = x2conv(in_channels, 64)
@@ -87,7 +87,7 @@ class UNet(BaseModel):
         self.up2 = decoder(512, 256)
         self.up3 = decoder(256, 128)
         self.up4 = decoder(128, 64)
-        self.final_conv = nn.Conv2d(64, num_classes, kernel_size=1)
+        self.final_conv = nn.Conv2d(64, classes, kernel_size=1)
         self._initialize_weights()
 
         if freeze_bn:
@@ -135,7 +135,7 @@ class UNet(BaseModel):
 """
 
 class UNetResnet(BaseModel):
-    def __init__(self, num_classes, in_channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
+    def __init__(self, classes, in_channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
         super(UNetResnet, self).__init__()
         model = getattr(resnet, backbone)(pretrained)#, norm_layer=nn.BatchNorm2d)
 
@@ -167,7 +167,7 @@ class UNetResnet(BaseModel):
         self.upconv5 = nn.ConvTranspose2d(48, 32, 4, 2, 1, bias=False)
 
         self.conv6 = nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1)
-        self.conv7 = nn.Conv2d(32, num_classes, kernel_size=1, bias=False)
+        self.conv7 = nn.Conv2d(32, classes, kernel_size=1, bias=False)
 
         initialize_weights(self)
 

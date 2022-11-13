@@ -1,7 +1,7 @@
 source ~/.bashrc
 conda activate climatenet
 
-model="unet"
+model=$0
 location=euler
 
 if [[ $location == euler ]]
