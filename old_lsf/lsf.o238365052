@@ -1,0 +1,21 @@
+Running on local with following parameters : 
+User : alexis
+Model : unet
+Data folder : /media/alexis/MyPassport/ai4good/
+Saving directory : /media/alexis/MyPassport/ai4good//unet/
+Checkpoint path : /media/alexis/MyPassport/ai4good//checkpoints/unet/
+{'model': 'unet', 'data_dir': '/media/alexis/MyPassport/ai4good/', 'checkpoint_path': '/media/alexis/MyPassport/ai4good//checkpoints/unet/', 'save_dir': '/media/alexis/MyPassport/ai4good//unet/'}
+Running unet...
+train_path :  /media/alexis/MyPassport/ai4good/train/
+val_path :  /media/alexis/MyPassport/ai4good/val/
+inference_path :  /media/alexis/MyPassport/ai4good/test/
+Loading data...
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 33, in <module>
+    train.run(
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/train.py", line 32, in run
+    train = ClimateDatasetLabeled(train_path, config)
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/utils/data.py", line 34, in __init__
+    self.files: [str] = [f for f in sorted(listdir(self.path)) if f[-3:] == ".nc"]
+FileNotFoundError: [Errno 2] No such file or directory: '/media/alexis/MyPassport/ai4good/train/'
+Done!

@@ -1,0 +1,21 @@
+Running on euler with following parameters : 
+User : atabin
+Model : unet
+Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
+Saving directory : /cluster/scratch/atabin/unet/
+Checkpoint path : /cluster/scratch/atabin/checkpoints/unet/
+{'model': 'unet', 'data_dir': '/cluster/work/igp_psr/ai4good/group-1b/data/', 'checkpoint_path': '/cluster/scratch/atabin/checkpoints/unet/', 'save_dir': '/cluster/scratch/atabin/unet/'}
+Running unet...
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 33, in <module>
+    train.run(
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/train.py", line 21, in run
+    model = MODELS[model_name](config)
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/unet/unet.py", line 37, in __init__
+    self.network = UNetResnetModule(num_classes=len(self.config.labels), in_channels=len(list(self.config.fields))).cuda()
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/unet/unet.py", line 268, in __init__
+    model = getattr(resnet, backbone)(pretrained, norm_layer=nn.BatchNorm2d)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torchvision/models/resnet.py", line 197, in resnet50
+    model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
+TypeError: __init__() got an unexpected keyword argument 'norm_layer'
+Done!

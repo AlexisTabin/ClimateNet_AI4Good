@@ -1,0 +1,17 @@
+Running on euler with following parameters : 
+User : atabin
+Model : cgnet
+Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
+Saving directory : /cluster/scratch/atabin/cgnet/
+Checkpoint path : /cluster/scratch/atabin/checkpoints/cgnet/
+{'model': 'cgnet', 'data_dir': '/cluster/work/igp_psr/ai4good/group-1b/data/', 'checkpoint_path': '/cluster/scratch/atabin/checkpoints/cgnet/', 'save_dir': '/cluster/scratch/atabin/cgnet/'}
+Running baseline example...
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 37, in <module>
+    trained_cgnet.run(
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/trained_cgnet/trained_cgnet.py", line 12, in run
+    config = Config(f'climatenet/trained_{model}/{model}_config.json')
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/utils/utils.py", line 31, in __init__
+    self.config_dict = json.load(open(path))
+FileNotFoundError: [Errno 2] No such file or directory: 'climatenet/trained_cgnet/cgnet_config.json'
+Done!

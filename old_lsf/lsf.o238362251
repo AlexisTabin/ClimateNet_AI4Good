@@ -1,0 +1,23 @@
+Running on euler with following parameters : 
+User : atabin
+Model : unet
+Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
+Saving directory : /cluster/scratch/atabin/unet/
+Checkpoint path : /cluster/scratch/atabin/checkpoints/unet/
+{'model': 'unet', 'data_dir': '/cluster/work/igp_psr/ai4good/group-1b/data/', 'checkpoint_path': '/cluster/scratch/atabin/checkpoints/unet/', 'save_dir': '/cluster/scratch/atabin/unet/'}
+Running unet...
+train_path :  /cluster/work/igp_psr/ai4good/group-1b/data/train/
+val_path :  /cluster/work/igp_psr/ai4good/group-1b/data/val/
+inference_path :  /cluster/work/igp_psr/ai4good/group-1b/data/test/
+Loading data...
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 33, in <module>
+    train.run(
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/train.py", line 40, in run
+    model.load_model(checkpoint_path)   
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/unet/unet.py", line 146, in load_model
+    self.config = Config(path.join(model_path, 'config.json'))
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/utils/utils.py", line 31, in __init__
+    self.config_dict = json.load(open(path))
+FileNotFoundError: [Errno 2] No such file or directory: '/cluster/scratch/atabin/checkpoints/unet/config.json'
+Done!
