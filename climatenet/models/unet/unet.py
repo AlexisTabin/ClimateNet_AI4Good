@@ -17,11 +17,6 @@ from tqdm import tqdm
 
 from climatenet.base.base_model import BaseModel
 from climatenet.modules import *
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.helpers import initialize_weights, set_trainable
-from climatenet.utils.losses import jaccard_loss
-from climatenet.utils.metrics import get_cm, get_iou_perClass
-from climatenet.utils.utils import Config
 
 def x2conv(in_channels, out_channels, inner_channels=None):
     inner_channels = out_channels // 2 if inner_channels is None else inner_channels
@@ -135,13 +130,13 @@ class UNet(BaseModel):
 """
 
 class UNetResnet(BaseModel):
-    def __init__(self, classes, in_channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
+    def __init__(self, classes, channels=3, backbone='resnet50', pretrained=True, freeze_bn=False, freeze_backbone=False, **_):
         super(UNetResnet, self).__init__()
         model = getattr(resnet, backbone)(pretrained)#, norm_layer=nn.BatchNorm2d)
 
         self.initial = list(model.children())[:4]
-        if in_channels != 3:
-            self.initial[0] = nn.Conv2d(in_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        if channels != 3:
+            self.initial[0] = nn.Conv2d(channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.initial = nn.Sequential(*self.initial)
 
         # encoder
