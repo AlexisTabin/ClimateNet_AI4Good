@@ -98,7 +98,7 @@ def visualize_events(event_masks_xarray, input_data : ClimateDataset, png_dir):
 
         data = input_data[int(i/8)]
         print(f"Type data: {type(data)}",  flush=True)
-        print(f"Shape data: {data.shape}", flush=True)
+        # print(f"Shape data: {data.shape}", flush=True)
 
         selected_data = data.sel(variable="TMQ")
         print(f"Type selected_data: {type(selected_data)}",  flush=True)
