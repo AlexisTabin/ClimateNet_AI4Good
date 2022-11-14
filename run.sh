@@ -1,8 +1,6 @@
 source ~/.bashrc
 conda activate climatenet
 
-echo "variables : \ns1 : $1 \ns2 : $2 \ns3 : $3"
-echo "all variables : $@"
 model=$1
 location=euler
 
