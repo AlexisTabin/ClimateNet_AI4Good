@@ -12,9 +12,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from climatenet.models.cgnet.cgnet import CGNet
-from climatenet.models.unet.unet import UNetResnet
+from climatenet.models.unet.unet import UNetResnet, UNet
 from climatenet.models.upernet.upernet import UperNet
-from climatenet.models.segnet.segnet import SegResNet
+from climatenet.models.segnet.segnet import SegResNet, SegNet
 from climatenet.modules import *
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.losses import jaccard_loss
@@ -24,8 +24,10 @@ from climatenet.utils.utils import Config
 MODELS = {
     'upernet': UperNet,
     'cgnet': CGNet,
-    'unet': UNetResnet,
-    'segnet': SegResNet
+    'unetresnet': UNetResnet,
+    'unet': UNet,
+    'segnetresnet': SegResNet,
+    'segnet': SegNet
 }
 
 class Trainer():
