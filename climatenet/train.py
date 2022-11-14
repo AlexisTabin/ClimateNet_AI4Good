@@ -60,20 +60,34 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
         # print('traceback : ', traceback.format_exc())
 
     try : 
+        print('-'*50)
+        print('visualizing inference events...')
+        print('-'*50)
+        print('\n')
         visualize_events(event_masks, inference, save_dir + 'pngs/')
     except Exception as e:
         print("Error when visualizing events of inference : ", e)
         print('\n'*3)
         print('traceback : ', traceback.format_exc())
+        pass
 
     try : 
+        print('-'*50)
+        print('visualizing val events...')
+        print('-'*50)
+        print('\n')
         visualize_events(event_masks, val, save_dir + 'pngs/')
     except Exception as e:
         print("Error when visualizing events of val: ", e)
         print('\n'*3)
         print('traceback : ', traceback.format_exc())
+        pass
 
-    try : 
+    try :        
+        print('-'*50)
+        print('visualizing train events...')
+        print('-'*50)
+        print('\n')
         visualize_events(event_masks, train, save_dir + 'pngs/')
     except Exception as e:
         print("Error when visualizing events of train: ", e)
