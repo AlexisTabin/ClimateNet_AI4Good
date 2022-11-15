@@ -18,8 +18,6 @@ class Trainer(BaseTrainer):
         if config['trainer']['log_per_iter']: self.log_step = int(self.log_step / self.train_loader.batch_size) + 1
 
         self.num_classes = self.train_loader.dataset.num_classes
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("self.device : ", self.device)
         
         # TRANSORMS FOR VISUALIZATION
         self.restore_transform = transforms.Compose([

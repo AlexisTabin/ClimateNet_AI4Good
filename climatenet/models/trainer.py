@@ -77,12 +77,14 @@ class Trainer():
         else:
             raise ValueError('''You need to specify either a config or a model path.''')
 
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("self.device : ", self.device)
         self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)   
         self.scaler = GradScaler()     
         
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
-        print(torch.cuda.memory_summary(device=None, abbreviated=False))
+        print(torch.cuda.memory_summary(device=self.device, abbreviated=False))
         torch.cuda.empty_cache()
         gc.collect()
         self.network.train()
