@@ -60,6 +60,8 @@ class Trainer():
         if model_name is None :
             raise ValueError('model_name must be specified')
 
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("self.device : ", self.device)
         if config is not None and model_path is not None:
             raise ValueError('''Config and weight path set at the same time. 
             Pass a config if you want to create a new model, 
@@ -77,8 +79,6 @@ class Trainer():
         else:
             raise ValueError('''You need to specify either a config or a model path.''')
 
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("self.device : ", self.device)
         self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)   
         self.scaler = GradScaler()     
         
