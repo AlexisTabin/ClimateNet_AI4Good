@@ -1,6 +1,7 @@
 name: climatenet
 channels:
   - pytorch
+  - nvidia
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
@@ -15,6 +16,38 @@ dependencies:
   - cftime=1.3.0=py38h6323ea4_0
   - chardet=3.0.4=py38h06a4308_1003
   - cryptography=3.2.1=py38h3c74f83_1
+  - cuda=11.7.1=0
+  - cuda-cccl=11.7.91=0
+  - cuda-command-line-tools=11.7.1=0
+  - cuda-compiler=11.7.1=0
+  - cuda-cudart=11.7.99=0
+  - cuda-cudart-dev=11.7.99=0
+  - cuda-cuobjdump=11.7.91=0
+  - cuda-cupti=11.7.101=0
+  - cuda-cuxxfilt=11.7.91=0
+  - cuda-demo-suite=11.8.86=0
+  - cuda-documentation=11.8.86=0
+  - cuda-driver-dev=11.7.99=0
+  - cuda-gdb=11.8.86=0
+  - cuda-libraries=11.7.1=0
+  - cuda-libraries-dev=11.7.1=0
+  - cuda-memcheck=11.8.86=0
+  - cuda-nsight=11.8.86=0
+  - cuda-nsight-compute=11.8.0=0
+  - cuda-nvcc=11.7.99=0
+  - cuda-nvdisasm=11.8.86=0
+  - cuda-nvml-dev=11.7.91=0
+  - cuda-nvprof=11.8.87=0
+  - cuda-nvprune=11.7.91=0
+  - cuda-nvrtc=11.7.99=0
+  - cuda-nvrtc-dev=11.7.99=0
+  - cuda-nvtx=11.7.91=0
+  - cuda-nvvp=11.8.87=0
+  - cuda-runtime=11.7.1=0
+  - cuda-sanitizer-api=11.8.86=0
+  - cuda-toolkit=11.7.1=0
+  - cuda-tools=11.7.1=0
+  - cuda-visual-tools=11.7.1=0
   - cudatoolkit=10.1.243=h6bb024c_0
   - cudnn=7.6.5=cuda10.1_0
   - curl=7.71.1=hbc83047_1
@@ -23,6 +56,7 @@ dependencies:
   - expat=2.2.10=he6710b0_2
   - fontconfig=2.13.0=h9420a91_0
   - freetype=2.10.4=h5ab3b9f_0
+  - gds-tools=1.4.0.31=0
   - geos=3.8.0=he6710b0_0
   - glib=2.66.1=h92f7085_0
   - gst-plugins-base=1.14.0=hbbd80ab_1
@@ -37,12 +71,28 @@ dependencies:
   - krb5=1.18.2=h173b8e3_0
   - lcms2=2.11=h396b838_0
   - ld_impl_linux-64=2.33.1=h53a641e_7
+  - libcublas=11.11.3.6=0
+  - libcublas-dev=11.11.3.6=0
+  - libcufft=10.9.0.58=0
+  - libcufft-dev=10.9.0.58=0
+  - libcufile=1.4.0.31=0
+  - libcufile-dev=1.4.0.31=0
+  - libcurand=10.3.0.86=0
+  - libcurand-dev=10.3.0.86=0
   - libcurl=7.71.1=h20c2e04_1
+  - libcusolver=11.4.1.48=0
+  - libcusolver-dev=11.4.1.48=0
+  - libcusparse=11.7.5.86=0
+  - libcusparse-dev=11.7.5.86=0
   - libedit=3.1.20191231=h14c3975_1
   - libffi=3.3=he6710b0_2
   - libgcc-ng=9.1.0=hdf63c60_0
   - libgfortran-ng=7.3.0=hdf63c60_0
   - libnetcdf=4.7.3=hb80b6cc_0
+  - libnpp=11.8.0.86=0
+  - libnpp-dev=11.8.0.86=0
+  - libnvjpeg=11.9.0.86=0
+  - libnvjpeg-dev=11.9.0.86=0
   - libpng=1.6.37=hbc83047_0
   - libssh2=1.9.0=h1ba5d50_1
   - libstdcxx-ng=9.1.0=hdf63c60_0
@@ -60,6 +110,7 @@ dependencies:
   - ncurses=6.2=he6710b0_1
   - netcdf4=1.5.3=py38hbf33ddf_0
   - ninja=1.10.2=py38hff7bd54_0
+  - nsight-compute=2022.3.0.22=0
   - numpy=1.19.2=py38h54aff64_0
   - numpy-base=1.19.2=py38hfa32c7d_0
   - olefile=0.46=py_0
@@ -84,6 +135,7 @@ dependencies:
   - python=3.8.5=h7579374_1
   - python-dateutil=2.8.1=py_0
   - pytorch=1.13.0=py3.8_cpu_0
+  - pytorch-cuda=11.7=h67b0de4_0
   - pytorch-mutex=1.0=cpu
   - pytz=2020.4=pyhd3eb1b0_0
   - pyyaml=5.3.1=py38h7b6447c_1
@@ -97,6 +149,7 @@ dependencies:
   - six=1.15.0=py38h06a4308_0
   - sqlite=3.33.0=h62c20be_0
   - tk=8.6.10=hbc83047_0
+  - torchaudio=0.13.0=py38_cpu
   - torchvision=0.2.2=py_3
   - tornado=6.1=py38h27cfd23_0
   - tqdm=4.54.1=pyhd3eb1b0_0
@@ -110,3 +163,4 @@ dependencies:
   - zstd=1.4.5=h9ceee32_0
   - pip:
     - haversine==2.3.0
+prefix: /cluster/home/atabin/miniconda3/envs/climatenet

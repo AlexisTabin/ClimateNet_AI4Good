@@ -1,0 +1,15 @@
+Running on euler with following parameters : 
+User : atabin
+Model : segnet
+Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
+Saving directory : /cluster/scratch/atabin/segnet/
+Checkpoint path : /cluster/scratch/atabin/checkpoints/segnet/
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 2, in <module>
+    import climatenet.train as train
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/train.py", line 5, in <module>
+    from climatenet.models.trainer import MODELS, Trainer
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/trainer.py", line 12, in <module>
+    from torch.cuda.amp import GradScaler, autocast
+ModuleNotFoundError: No module named 'torch.cuda.amp'
+Done!

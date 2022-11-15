@@ -1,0 +1,81 @@
+Running on euler with following parameters : 
+User : atabin
+Model : unet
+Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
+Saving directory : /cluster/scratch/atabin/unet/
+Checkpoint path : /cluster/scratch/atabin/checkpoints/unet/
+  0%|          | 0/80 [00:00<?, ?it/s]{'model': 'unet', 'data_dir': '/cluster/work/igp_psr/ai4good/group-1b/data/', 'checkpoint_path': '/cluster/scratch/atabin/checkpoints/unet/', 'save_dir': '/cluster/scratch/atabin/unet/'}
+Running unet...
+train_path :  /cluster/work/igp_psr/ai4good/group-1b/data/train/
+val_path :  /cluster/work/igp_psr/ai4good/group-1b/data/val/
+inference_path :  /cluster/work/igp_psr/ai4good/group-1b/data/test/
+Loading data...
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |  104936 KB |  104936 KB |  104936 KB |       0 B  |
+|       from large pool |  102016 KB |  102016 KB |  102016 KB |       0 B  |
+|       from small pool |    2920 KB |    2920 KB |    2920 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Active memory         |  104936 KB |  104936 KB |  104936 KB |       0 B  |
+|       from large pool |  102016 KB |  102016 KB |  102016 KB |       0 B  |
+|       from small pool |    2920 KB |    2920 KB |    2920 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |  120832 KB |  120832 KB |  120832 KB |       0 B  |
+|       from large pool |  116736 KB |  116736 KB |  116736 KB |       0 B  |
+|       from small pool |    4096 KB |    4096 KB |    4096 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |   15896 KB |   23021 KB |   51003 KB |   35107 KB |
+|       from large pool |   14720 KB |   22144 KB |   47488 KB |   32768 KB |
+|       from small pool |    1176 KB |    2043 KB |    3515 KB |    2339 KB |
+|---------------------------------------------------------------------------|
+| Allocations           |     130    |     130    |     130    |       0    |
+|       from large pool |      13    |      13    |      13    |       0    |
+|       from small pool |     117    |     117    |     117    |       0    |
+|---------------------------------------------------------------------------|
+| Active allocs         |     130    |     130    |     130    |       0    |
+|       from large pool |      13    |      13    |      13    |       0    |
+|       from small pool |     117    |     117    |     117    |       0    |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |       8    |       8    |       8    |       0    |
+|       from large pool |       6    |       6    |       6    |       0    |
+|       from small pool |       2    |       2    |       2    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       3    |       4    |       5    |       2    |
+|       from large pool |       1    |       3    |       3    |       2    |
+|       from small pool |       2    |       2    |       2    |       0    |
+|===========================================================================|
+
+Epoch 1:
+  0%|          | 0/80 [00:07<?, ?it/s]
+Traceback (most recent call last):
+  File "/cluster/home/atabin/ClimateNet_AI4Good/run.py", line 33, in <module>
+    train.run(
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/train.py", line 30, in run
+    model.train(train)
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/trainer.py", line 100, in train
+    outputs = torch.softmax(self.network(features), 1)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/unet/unet.py", line 104, in forward
+    x2 = self.down1(x1)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/models/unet/unet.py", line 40, in forward
+    x = self.down_conv(x)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/container.py", line 100, in forward
+    input = module(input)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/module.py", line 532, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/modules/batchnorm.py", line 104, in forward
+    return F.batch_norm(
+  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/functional.py", line 1668, in batch_norm
+    return torch.batch_norm(
+RuntimeError: CUDA out of memory. Tried to allocate 1.69 GiB (GPU 0; 7.93 GiB total capacity; 6.09 GiB already allocated; 1.35 GiB free; 6.10 GiB reserved in total by PyTorch)
+Done!
