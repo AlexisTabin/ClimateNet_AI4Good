@@ -9,7 +9,8 @@ import torch.nn.functional as F
 import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from torch.cuda.amp import GradScaler, autocast
+from torch.cuda.amp.autocast_mode import autocast
+from torch.cuda.amp.grad_scaler import GradScaler
 from tqdm import tqdm
 
 from climatenet.models.cgnet.cgnet import CGNet
