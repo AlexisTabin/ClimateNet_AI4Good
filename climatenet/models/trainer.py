@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
+from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
 
 from climatenet.models.cgnet.cgnet import CGNet
@@ -75,7 +76,8 @@ class Trainer():
         else:
             raise ValueError('''You need to specify either a config or a model path.''')
 
-        self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)        
+        self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)   
+        self.scaler = GradScaler()     
         
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
@@ -92,23 +94,38 @@ class Trainer():
             aggregate_cm = np.zeros((3,3))
 
             for features, labels in epoch_loader:
-        
-                # Push data on GPU and pass forward
-                features = torch.tensor(features.values).cuda()
-                labels = torch.tensor(labels.values).cuda()
-                
-                outputs = torch.softmax(self.network(features), 1)
+                self.optimizer.zero_grad()
+
+                # Runs the forward pass with autocasting.
+                with autocast(device_type='cuda', dtype=torch.float16):
+                    # Push data on GPU and pass forward
+                    features = torch.tensor(features.values).cuda()
+                    labels = torch.tensor(labels.values).cuda()
+                    
+                    outputs = torch.softmax(self.network(features), 1)
+                    # Pass backward
+                    loss = jaccard_loss(outputs, labels)
+
+                # Scales loss.  Calls backward() on scaled loss to create scaled gradients.
+                # Backward passes under autocast are not recommended.
+                # Backward ops run in the same dtype autocast chose for corresponding forward ops.
+                self.scaler.scale(loss).backward()
+
+                # scaler.step() first unscales the gradients of the optimizer's assigned params.
+                # If these gradients do not contain infs or NaNs, optimizer.step() is then called,
+                # otherwise, optimizer.step() is skipped.
+                self.scaler.step(self.optimizer)
+
+                # Updates the scale for next iteration.
+                self.scaler.update()
 
                 # Update training CM
                 predictions = torch.max(outputs, 1)[1]
                 aggregate_cm += get_cm(predictions, labels, 3)
 
-                # Pass backward
-                loss = jaccard_loss(outputs, labels)
                 epoch_loader.set_description(f'Loss: {loss.item()}')
                 loss.backward()
                 self.optimizer.step()
-                self.optimizer.zero_grad() 
 
             print('Epoch stats:')
             print(aggregate_cm)
