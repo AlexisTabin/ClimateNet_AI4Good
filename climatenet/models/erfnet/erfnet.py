@@ -9,10 +9,10 @@ import torch.nn.init as init
 import torch.nn.functional as F
 
 class DownsamplerBlock (nn.Module):
-    def __init__(self, ninput, noutput):
+    def __init__(self, ninput, noutput, channels):
         super().__init__()
 
-        self.conv = nn.Conv2d(ninput, noutput-ninput, (3, 3), stride=2, padding=1, bias=True)
+        self.conv = nn.Conv2d(ninput, noutput-ninput, (channels, channels), stride=2, padding=1, bias=True)
         self.pool = nn.MaxPool2d(2, stride=2)
         self.bn = nn.BatchNorm2d(noutput, eps=1e-3)
 
