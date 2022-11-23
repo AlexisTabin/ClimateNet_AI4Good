@@ -17,6 +17,7 @@ from climatenet.models.cgnet.cgnet import CGNet
 from climatenet.models.unet.unet import UNetResnet, UNet
 from climatenet.models.upernet.upernet import UperNet
 from climatenet.models.segnet.segnet import SegResNet, SegNet
+from climatenet.models.erfnet.erfnet import ERFNet
 from climatenet.modules import *
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.losses import jaccard_loss
@@ -29,8 +30,9 @@ MODELS = {
     'unetresnet': UNetResnet,
     'unet': UNet,
     'segnetresnet': SegResNet,
-    'segnet': SegNet
-}
+    'segnet': SegNet,
+    'erfnet': ERFNet
+    }
 
 class Trainer():
     '''
