@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 # from torch.cuda.amp.autocast_mode import autocast # Needs Pytorch 1.7
 # from torch.cuda.amp.grad_scaler import GradScaler
 from tqdm import tqdm
+from torchsummary import summary
 
 from climatenet.models.cgnet.cgnet import CGNet
 from climatenet.models.unet.unet import UNetResnet, UNet
@@ -90,6 +91,8 @@ class Trainer():
         torch.cuda.empty_cache()
         gc.collect()
         self.network.train()
+        print('...SUMMARY...')
+        print(summary(self.network, (4, 100, 100)))
         collate = ClimateDatasetLabeled.collate
         loader = DataLoader(dataset, batch_size=self.config.train_batch_size, collate_fn=collate, num_workers=4, shuffle=True)
         for epoch in range(1, self.config.epochs+1):

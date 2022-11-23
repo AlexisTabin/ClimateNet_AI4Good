@@ -7,9 +7,6 @@ from climatenet.track_events import track_events
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.utils import Config
 from climatenet.visualize_events import visualize_events
-from torchvision import models
-from torchsummary import summary
-
 
 def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
     config = Config(f'climatenet/models/{model_name}/{model_name}_config.json')
@@ -28,9 +25,7 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir=''):
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    print('...SUMMARY...')
-    print(summary(model, (4, 100, 100)))
-    
+
     model.train(train)
     model.evaluate(val)
     model.save_model(checkpoint_path)
