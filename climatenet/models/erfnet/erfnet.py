@@ -134,14 +134,14 @@ class Decoder (nn.Module):
 
 #ERFNet
 class ERFNet(nn.Module):
-    def __init__(self, num_classes, encoder=None):  #use encoder to pass pretrained encoder
+    def __init__(self, classes, encoder=None):  #use encoder to pass pretrained encoder
         super().__init__()
 
         if (encoder == None):
-            self.encoder = Encoder(num_classes)
+            self.encoder = Encoder(classes)
         else:
             self.encoder = encoder
-        self.decoder = Decoder(num_classes)
+        self.decoder = Decoder(classes)
 
     def forward(self, input, only_encode=False):
         if only_encode:
