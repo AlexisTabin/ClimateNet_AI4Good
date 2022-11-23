@@ -61,9 +61,9 @@ class non_bottleneck_1d (nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, channels):
         super().__init__()
-        self.initial_block = DownsamplerBlock(3,16)
+        self.initial_block = DownsamplerBlock(channels,16)
 
         self.layers = nn.ModuleList()
 
@@ -96,9 +96,9 @@ class Encoder(nn.Module):
 
 
 class UpsamplerBlock (nn.Module):
-    def __init__(self, ninput, noutput):
+    def __init__(self, ninput, noutput, channels):
         super().__init__()
-        self.conv = nn.ConvTranspose2d(ninput, noutput, 3, stride=2, padding=1, output_padding=1, bias=True)
+        self.conv = nn.ConvTranspose2d(ninput, noutput, channels, stride=2, padding=1, output_padding=1, bias=True)
         self.bn = nn.BatchNorm2d(noutput, eps=1e-3)
 
     def forward(self, input):
@@ -107,16 +107,16 @@ class UpsamplerBlock (nn.Module):
         return F.relu(output)
 
 class Decoder (nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, channels):
         super().__init__()
 
         self.layers = nn.ModuleList()
 
-        self.layers.append(UpsamplerBlock(128,64))
+        self.layers.append(UpsamplerBlock(128,64, channels))
         self.layers.append(non_bottleneck_1d(64, 0, 1))
         self.layers.append(non_bottleneck_1d(64, 0, 1))
 
-        self.layers.append(UpsamplerBlock(64,16))
+        self.layers.append(UpsamplerBlock(64,16, channels))
         self.layers.append(non_bottleneck_1d(16, 0, 1))
         self.layers.append(non_bottleneck_1d(16, 0, 1))
 
@@ -134,14 +134,14 @@ class Decoder (nn.Module):
 
 #ERFNet
 class ERFNet(nn.Module):
-    def __init__(self, classes, encoder=None):  #use encoder to pass pretrained encoder
+    def __init__(self, classes, channels, encoder=None):  #use encoder to pass pretrained encoder
         super().__init__()
 
         if (encoder == None):
-            self.encoder = Encoder(classes)
+            self.encoder = Encoder(classes, channels)
         else:
             self.encoder = encoder
-        self.decoder = Decoder(classes)
+        self.decoder = Decoder(classes, channels)
 
     def forward(self, input, only_encode=False):
         if only_encode:
