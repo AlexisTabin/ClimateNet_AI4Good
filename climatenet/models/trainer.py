@@ -9,8 +9,8 @@ import torch.nn.functional as F
 import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from torch.cuda.amp.autocast_mode import autocast
-from torch.cuda.amp.grad_scaler import GradScaler
+# from torch.cuda.amp.autocast_mode import autocast # Needs Pytorch 1.7
+# from torch.cuda.amp.grad_scaler import GradScaler
 from tqdm import tqdm
 
 from climatenet.models.cgnet.cgnet import CGNet
@@ -80,7 +80,7 @@ class Trainer():
             raise ValueError('''You need to specify either a config or a model path.''')
 
         self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)   
-        self.scaler = GradScaler()     
+        # self.scaler = GradScaler()     
         
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
@@ -100,27 +100,27 @@ class Trainer():
                 self.optimizer.zero_grad()
 
                 # Runs the forward pass with autocasting.
-                with autocast(device_type='cuda', dtype=torch.float16):
-                    # Push data on GPU and pass forward
-                    features = torch.tensor(features.values).cuda()
-                    labels = torch.tensor(labels.values).cuda()
-                    
-                    outputs = torch.softmax(self.network(features), 1)
-                    # Pass backward
-                    loss = jaccard_loss(outputs, labels)
+                # with autocast(device_type='cuda', dtype=torch.float16):
+                # Push data on GPU and pass forward
+                features = torch.tensor(features.values).cuda()
+                labels = torch.tensor(labels.values).cuda()
+                
+                outputs = torch.softmax(self.network(features), 1)
+                # Pass backward
+                loss = jaccard_loss(outputs, labels)
 
                 # Scales loss.  Calls backward() on scaled loss to create scaled gradients.
                 # Backward passes under autocast are not recommended.
                 # Backward ops run in the same dtype autocast chose for corresponding forward ops.
-                self.scaler.scale(loss).backward()
+                # self.scaler.scale(loss).backward()
 
                 # scaler.step() first unscales the gradients of the optimizer's assigned params.
                 # If these gradients do not contain infs or NaNs, optimizer.step() is then called,
                 # otherwise, optimizer.step() is skipped.
-                self.scaler.step(self.optimizer)
+                # self.scaler.step(self.optimizer)
 
                 # Updates the scale for next iteration.
-                self.scaler.update()
+                # self.scaler.update()
 
                 # Update training CM
                 predictions = torch.max(outputs, 1)[1]
