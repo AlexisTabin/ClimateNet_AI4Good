@@ -92,7 +92,7 @@ class Trainer():
         gc.collect()
         self.network.train()
         print('...SUMMARY...')
-        print(summary(self.network, (4, 100, 100)))
+        print(summary(self.network, (3, 100, 100)))
         collate = ClimateDatasetLabeled.collate
         loader = DataLoader(dataset, batch_size=self.config.train_batch_size, collate_fn=collate, num_workers=4, shuffle=True)
         for epoch in range(1, self.config.epochs+1):
