@@ -9,10 +9,10 @@ import torch.nn.init as init
 import torch.nn.functional as F
 
 class DownsamplerBlock (nn.Module):
-    def __init__(self, ninput, noutput, channels):
+    def __init__(self, ninput, noutput):
         super().__init__()
 
-        self.conv = nn.Conv2d(ninput, noutput-ninput, (channels, channels), stride=2, padding=1, bias=True)
+        self.conv = nn.Conv2d(ninput, noutput-ninput, (3, 3), stride=2, padding=1, bias=True)
         self.pool = nn.MaxPool2d(2, stride=2)
         self.bn = nn.BatchNorm2d(noutput, eps=1e-3)
 
@@ -61,18 +61,18 @@ class non_bottleneck_1d (nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, num_classes, channels):
+    def __init__(self, num_classes):
         super().__init__()
-        self.initial_block = DownsamplerBlock(3,16, channels)
+        self.initial_block = DownsamplerBlock(3,16)
 
         self.layers = nn.ModuleList()
 
-        self.layers.append(DownsamplerBlock(16,64, channels))
+        self.layers.append(DownsamplerBlock(16,64))
 
         for x in range(0, 5):    #5 times
            self.layers.append(non_bottleneck_1d(64, 0.03, 1)) 
 
-        self.layers.append(DownsamplerBlock(64,128, channels))
+        self.layers.append(DownsamplerBlock(64,128))
 
         for x in range(0, 2):    #2 times
             self.layers.append(non_bottleneck_1d(128, 0.3, 2))
@@ -96,9 +96,9 @@ class Encoder(nn.Module):
 
 
 class UpsamplerBlock (nn.Module):
-    def __init__(self, ninput, noutput, channels):
+    def __init__(self, ninput, noutput):
         super().__init__()
-        self.conv = nn.ConvTranspose2d(ninput, noutput, channels, stride=2, padding=1, output_padding=1, bias=True)
+        self.conv = nn.ConvTranspose2d(ninput, noutput, 3, stride=2, padding=1, output_padding=1, bias=True)
         self.bn = nn.BatchNorm2d(noutput, eps=1e-3)
 
     def forward(self, input):
@@ -107,16 +107,16 @@ class UpsamplerBlock (nn.Module):
         return F.relu(output)
 
 class Decoder (nn.Module):
-    def __init__(self, num_classes, channels):
+    def __init__(self, num_classes):
         super().__init__()
 
         self.layers = nn.ModuleList()
 
-        self.layers.append(UpsamplerBlock(128,64, channels))
+        self.layers.append(UpsamplerBlock(128,64))
         self.layers.append(non_bottleneck_1d(64, 0, 1))
         self.layers.append(non_bottleneck_1d(64, 0, 1))
 
-        self.layers.append(UpsamplerBlock(64,16, channels))
+        self.layers.append(UpsamplerBlock(64,16))
         self.layers.append(non_bottleneck_1d(16, 0, 1))
         self.layers.append(non_bottleneck_1d(16, 0, 1))
 
@@ -138,10 +138,10 @@ class ERFNet(nn.Module):
         super().__init__()
 
         if (encoder == None):
-            self.encoder = Encoder(classes, channels)
+            self.encoder = Encoder(classes)
         else:
             self.encoder = encoder
-        self.decoder = Decoder(classes, channels)
+        self.decoder = Decoder(classes)
 
     def forward(self, input, only_encode=False):
         if only_encode:
