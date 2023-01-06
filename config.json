@@ -1,10 +1,10 @@
 {
-    "architecture": "unet",
+    "architecture": "cgnet",
     "seed": 42,
     "lr": 0.001,
     "train_batch_size": 4,
     "pred_batch_size": 8,
-    "epochs": 10,
+    "epochs": 15,
     "fields": {
         "TMQ": {
             "mean": 19.21859,
@@ -24,9 +24,15 @@
         }
     },
     "labels": [
-      "Background",
-      "Tropical Cyclone",
-      "Atmospheric River"
+        "Background",
+        "Tropical Cyclone",
+        "Atmospheric River"
     ],
-    "description": "The Unet model."
+    "is_already_trained": false,
+    "checkpoint": "checkpoints/cgnet.pth",
+    "data_dir": "data_dir",
+    "save_dir": "save_dir",
+    "with_analysis": true,
+    "with_visualization": true,
+    "description": "The basic CGNet model. You can use this config to train your own model, or load it with our trained weights."
 }

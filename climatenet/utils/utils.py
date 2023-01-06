@@ -28,7 +28,7 @@ class Config():
     '''
 
     def __init__(self, path: str):
-        self.config_dict = json.load(open(path))
+        self.config_dict = json.load(open(path))['model']
 
         # TODO: Check structure
 
@@ -40,6 +40,12 @@ class Config():
         self.epochs = self.config_dict['epochs']
         self.fields = self.config_dict['fields']
         self.labels = self.config_dict['labels']
+        self.checkpoint_path = self.config_dict['checkpoint_path']
+        self.is_already_trained = self.config_dict['is_already_trained']
+        self.data_dir = self.config_dict['data_dir']
+        self.save_dir = self.config_dict['save_dir']
+        self.with_analysis = self.config_dict['with_analysis']
+        self.with_visualization = self.config_dict['with_visualization']
         self.description = self.config_dict['description']
 
         # Make reproducible

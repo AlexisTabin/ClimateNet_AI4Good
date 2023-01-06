@@ -17,7 +17,7 @@ from torchvision.models import resnet, resnet101
 from tqdm import tqdm
 
 from climatenet.base.base_model import BaseModel
-from climatenet.modules import *
+from climatenet.models.modules import *
 
 def x2conv(in_channels, out_channels, inner_channels=None):
     inner_channels = out_channels // 2 if inner_channels is None else inner_channels

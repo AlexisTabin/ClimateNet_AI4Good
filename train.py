@@ -8,10 +8,12 @@ from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.utils import Config
 from climatenet.visualize_events import visualize_events
 
-def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir='', train=True, visualize=False, analyze=False):
-    config = Config(f'climatenet/models/{model_name}/{model_name}_config.json')
+def run():
+    config = Config('config.json')
+    model_name = config.architecture
     model = Trainer(config, model_name)
 
+    data_dir = config.data_dir
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'
     inference_path = data_dir + 'test/' 
@@ -25,7 +27,8 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir='', trai
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    if train:
+    checkpoint_path = config.checkpoint_path
+    if not config.is_already_trained:
         model.train(train)
         model.evaluate(val)
         model.save_model(checkpoint_path)
@@ -44,7 +47,8 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir='', trai
     class_masks = model.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
     event_masks = track_events(class_masks) # masks with event IDs
 
-    if analyze:
+    save_dir = config.save_dir
+    if config.with_analysis:
         try :
             analyze_events(event_masks, class_masks, save_dir + 'results/')
         except Exception as e:
@@ -53,7 +57,7 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir='', trai
             # print('\n'*3)
             # print('traceback : ', traceback.format_exc())
 
-    if visualize:
+    if config.with_visualization:
         try : 
             print('-'*50)
             print('visualizing inference events...')
@@ -65,3 +69,6 @@ def run(model_name='upernet', checkpoint_path='', data_dir='', save_dir='', trai
             print('\n'*3)
             print('traceback : ', traceback.format_exc())
             pass
+
+if __name__ == '__main__':
+    run()

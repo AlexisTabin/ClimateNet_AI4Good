@@ -9,17 +9,15 @@ import torch.nn.functional as F
 import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-# from torch.cuda.amp.autocast_mode import autocast # Needs Pytorch 1.7
-# from torch.cuda.amp.grad_scaler import GradScaler
 from tqdm import tqdm
 from torchsummary import summary
 
-from climatenet.models.cgnet.cgnet import CGNet
-from climatenet.models.unet.unet import UNetResnet, UNet
-from climatenet.models.upernet.upernet import UperNet
-from climatenet.models.segnet.segnet import SegResNet, SegNet
-from climatenet.models.erfnet.erfnet import ERFNet
-from climatenet.modules import *
+from climatenet.models.cgnet import CGNet
+from climatenet.models.unet import UNetResnet, UNet
+from climatenet.models.upernet import UperNet
+from climatenet.models.segnet import SegResNet, SegNet
+from climatenet.models.erfnet import ERFNet
+from climatenet.models.modules import *
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.losses import jaccard_loss
 from climatenet.utils.metrics import get_cm, get_iou_perClass
@@ -33,7 +31,8 @@ MODELS = {
     'segnetresnet': SegResNet,
     'segnet': SegNet,
     'erfnet': ERFNet
-    }
+}
+
 
 class Trainer():
     '''
@@ -60,7 +59,7 @@ class Trainer():
     '''
 
     def __init__(self, config: Config = None, model_name: str = None, model_path: str = None):
-        if model_name is None :
+        if model_name is None:
             raise ValueError('model_name must be specified')
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -73,18 +72,22 @@ class Trainer():
         if config is not None:
             # Create new model
             self.config = config
-            self.network = MODELS[model_name](classes=len(self.config.labels), channels=len(list(self.config.fields))).cuda()
+            self.network = MODELS[model_name](classes=len(
+                self.config.labels), channels=len(list(self.config.fields))).cuda()
         elif model_path is not None:
             # Load model
             self.config = Config(path.join(model_path, 'config.json'))
-            self.network = MODELS[model_name](classes=len(self.config.labels), channels=len(list(self.config.fields))).cuda()
-            self.network.load_state_dict(torch.load(path.join(model_path, 'weights.pth')))
+            self.network = MODELS[model_name](classes=len(
+                self.config.labels), channels=len(list(self.config.fields))).cuda()
+            self.network.load_state_dict(torch.load(
+                path.join(model_path, 'weights.pth')))
         else:
-            raise ValueError('''You need to specify either a config or a model path.''')
+            raise ValueError(
+                '''You need to specify either a config or a model path.''')
 
-        self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)   
-        # self.scaler = GradScaler()     
-        
+        self.optimizer = Adam(self.network.parameters(), lr=self.config.lr)
+        # self.scaler = GradScaler()
+
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
         print(torch.cuda.memory_summary(device=self.device, abbreviated=False))
@@ -94,12 +97,13 @@ class Trainer():
         print('...SUMMARY...')
         print(summary(self.network, (3, 100, 100)))
         collate = ClimateDatasetLabeled.collate
-        loader = DataLoader(dataset, batch_size=self.config.train_batch_size, collate_fn=collate, num_workers=4, shuffle=True)
+        loader = DataLoader(dataset, batch_size=self.config.train_batch_size,
+                            collate_fn=collate, num_workers=4, shuffle=True)
         for epoch in range(1, self.config.epochs+1):
 
             print(f'Epoch {epoch}:')
             epoch_loader = tqdm(loader)
-            aggregate_cm = np.zeros((3,3))
+            aggregate_cm = np.zeros((3, 3))
 
             for features, labels in epoch_loader:
                 self.optimizer.zero_grad()
@@ -109,7 +113,7 @@ class Trainer():
                 # Push data on GPU and pass forward
                 features = torch.tensor(features.values).cuda()
                 labels = torch.tensor(labels.values).cuda()
-                
+
                 outputs = torch.softmax(self.network(features), 1)
                 # Pass backward
                 loss = jaccard_loss(outputs, labels)
@@ -144,23 +148,25 @@ class Trainer():
         '''Make predictions for the given dataset and return them as xr.DataArray'''
         self.network.eval()
         collate = ClimateDataset.collate
-        loader = DataLoader(dataset, batch_size=self.config.pred_batch_size, collate_fn=collate)
+        loader = DataLoader(
+            dataset, batch_size=self.config.pred_batch_size, collate_fn=collate)
         epoch_loader = tqdm(loader)
 
         predictions = []
         for batch in epoch_loader:
             features = torch.tensor(batch.values).cuda()
-        
+
             with torch.no_grad():
                 outputs = torch.softmax(self.network(features), 1)
             preds = torch.max(outputs, 1)[1].cpu().numpy()
 
             coords = batch.coords
             del coords['variable']
-            
+
             dims = [dim for dim in batch.dims if dim != "variable"]
-            
-            predictions.append(xr.DataArray(preds, coords=coords, dims=dims, attrs=batch.attrs))
+
+            predictions.append(xr.DataArray(
+                preds, coords=coords, dims=dims, attrs=batch.attrs))
 
         return xr.concat(predictions, dim='time')
 
@@ -168,16 +174,17 @@ class Trainer():
         '''Evaluate on a dataset and return statistics'''
         self.network.eval()
         collate = ClimateDatasetLabeled.collate
-        loader = DataLoader(dataset, batch_size=self.config.pred_batch_size, collate_fn=collate, num_workers=4)
+        loader = DataLoader(
+            dataset, batch_size=self.config.pred_batch_size, collate_fn=collate, num_workers=4)
 
         epoch_loader = tqdm(loader)
-        aggregate_cm = np.zeros((3,3))
+        aggregate_cm = np.zeros((3, 3))
 
         for features, labels in epoch_loader:
-        
+
             features = torch.tensor(features.values).cuda()
             labels = torch.tensor(labels.values).cuda()
-                
+
             with torch.no_grad():
                 outputs = torch.softmax(self.network(features), 1)
             predictions = torch.max(outputs, 1)[1]
@@ -193,13 +200,14 @@ class Trainer():
         Save model weights and config to a directory.
         '''
         # create save_path if it doesn't exist
-        pathlib.Path(save_path).mkdir(parents=True, exist_ok=True) 
+        pathlib.Path(save_path).mkdir(parents=True, exist_ok=True)
 
         # save weights and config
         self.config.save(path.join(save_path, 'config.json'))
-        torch.save(self.network.state_dict(), path.join(save_path, 'weights.pth'))
+        torch.save(self.network.state_dict(),
+                   path.join(save_path, 'weights.pth'))
 
-    def load_model(self, model_path: str, model_name: str=None):
+    def load_model(self, model_path: str, model_name: str = None):
         '''
         Load a model. While this can easily be done using the normal constructor, this might make the code more readable - 
         we instantly see that we're loading a model, and don't have to look at the arguments of the constructor first.
@@ -207,5 +215,7 @@ class Trainer():
         if model_name is None:
             raise ValueError('model_name must be specified')
         self.config = Config(path.join(model_path, 'config.json'))
-        self.network = MODELS[model_name](classes=len(self.config.labels), channels=len(list(self.config.fields))).cuda()
-        self.network.load_state_dict(torch.load(path.join(model_path, 'weights.pth')))
+        self.network = MODELS[model_name](classes=len(
+            self.config.labels), channels=len(list(self.config.fields))).cuda()
+        self.network.load_state_dict(torch.load(
+            path.join(model_path, 'weights.pth')))

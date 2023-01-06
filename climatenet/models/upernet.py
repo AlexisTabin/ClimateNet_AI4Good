@@ -15,7 +15,7 @@ from torchvision.models import resnet101
 from tqdm import tqdm
 
 from climatenet.base.base_model import BaseModel
-from climatenet.modules import *
+from climatenet.models.modules import *
 from climatenet.utils.helpers import initialize_weights, set_trainable
 
 
