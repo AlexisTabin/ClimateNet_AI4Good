@@ -12,7 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 import torch.utils.model_zoo as model_zoo
-from utils.helpers import initialize_weights,set_trainable
+from climatenet.utils.helpers import initialize_weights,set_trainable
 from itertools import chain
 '''
 'xception_65.pth'URL:https://github.com/zhangtianlun12/deeplabv3-/releases/download/v0.1/xception_65.pth
