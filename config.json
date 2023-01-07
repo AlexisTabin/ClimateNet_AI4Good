@@ -1,4 +1,5 @@
 {
+    "test" : "yomec",	
     "architecture": "cgnet",
     "save_dir": "/cluster/scratch/atabin/checkpoints/cgnet/",
     "seed": 42,

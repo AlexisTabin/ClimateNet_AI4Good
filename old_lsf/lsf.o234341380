@@ -1,177 +1,0 @@
-Running on euler with following parameters : 
-User : atabin
-Model : upernet
-Data folder : /cluster/work/igp_psr/ai4good/group-1b/data/
-Saving directory : /cluster/scratch/atabin/upernet/
-Checkpoint path : /cluster/scratch/atabin/checkpoints/upernet/
-  0%|          | 0/8 [00:00<?, ?it/s]/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/torch/nn/functional.py:2503: UserWarning: Default upsampling behavior when mode=bilinear is changed to align_corners=False since 0.4.0. Please specify align_corners=True if the old behavior is desired. See the documentation of nn.Upsample for details.
-  warnings.warn("Default upsampling behavior when mode={} is changed "
- 12%|█▎        | 1/8 [00:07<00:53,  7.62s/it] 25%|██▌       | 2/8 [00:12<00:40,  6.79s/it] 38%|███▊      | 3/8 [00:17<00:31,  6.21s/it] 50%|█████     | 4/8 [00:22<00:23,  5.76s/it] 62%|██████▎   | 5/8 [00:26<00:16,  5.49s/it] 75%|███████▌  | 6/8 [00:31<00:10,  5.26s/it] 88%|████████▊ | 7/8 [00:36<00:05,  5.12s/it]100%|██████████| 8/8 [00:39<00:00,  4.47s/it]100%|██████████| 8/8 [00:39<00:00,  4.92s/it]{'model': 'upernet', 'data_dir': '/cluster/work/igp_psr/ai4good/group-1b/data/', 'checkpoint_path': '/cluster/scratch/atabin/checkpoints/upernet/', 'save_dir': '/cluster/scratch/atabin/upernet/'}
-Running UperNet example...
-train_path :  /cluster/work/igp_psr/ai4good/group-1b/data/train/
-val_path :  /cluster/work/igp_psr/ai4good/group-1b/data/val/
-inference_path :  /cluster/work/igp_psr/ai4good/group-1b/data/test/
-Loading data...
-identifying connected components..
-
-tracking components across time..
-  0%|          | 0/61 [00:00<?, ?it/s]  2%|▏         | 1/61 [00:01<01:47,  1.79s/it]  3%|▎         | 2/61 [00:03<01:39,  1.69s/it]  5%|▍         | 3/61 [00:04<01:33,  1.61s/it]  7%|▋         | 4/61 [00:05<01:27,  1.53s/it]  8%|▊         | 5/61 [00:07<01:20,  1.45s/it] 10%|▉         | 6/61 [00:08<01:15,  1.37s/it] 11%|█▏        | 7/61 [00:09<01:08,  1.27s/it] 13%|█▎        | 8/61 [00:10<01:07,  1.28s/it] 15%|█▍        | 9/61 [00:11<01:04,  1.25s/it] 16%|█▋        | 10/61 [00:13<01:06,  1.30s/it] 18%|█▊        | 11/61 [00:14<01:03,  1.28s/it] 20%|█▉        | 12/61 [00:16<01:04,  1.33s/it] 21%|██▏       | 13/61 [00:17<01:04,  1.34s/it] 23%|██▎       | 14/61 [00:18<01:02,  1.33s/it] 25%|██▍       | 15/61 [00:20<01:03,  1.38s/it] 26%|██▌       | 16/61 [00:21<01:02,  1.38s/it] 28%|██▊       | 17/61 [00:23<01:01,  1.41s/it] 30%|██▉       | 18/61 [00:24<00:59,  1.39s/it] 31%|███       | 19/61 [00:25<00:58,  1.39s/it] 33%|███▎      | 20/61 [00:26<00:51,  1.26s/it] 34%|███▍      | 21/61 [00:28<00:51,  1.28s/it] 36%|███▌      | 22/61 [00:29<00:53,  1.37s/it] 38%|███▊      | 23/61 [00:30<00:51,  1.35s/it] 39%|███▉      | 24/61 [00:32<00:49,  1.34s/it] 41%|████      | 25/61 [00:33<00:51,  1.44s/it] 43%|████▎     | 26/61 [00:35<00:50,  1.45s/it] 44%|████▍     | 27/61 [00:36<00:49,  1.45s/it] 46%|████▌     | 28/61 [00:38<00:47,  1.45s/it] 48%|████▊     | 29/61 [00:39<00:44,  1.41s/it] 49%|████▉     | 30/61 [00:41<00:44,  1.42s/it] 51%|█████     | 31/61 [00:42<00:42,  1.42s/it] 52%|█████▏    | 32/61 [00:43<00:40,  1.41s/it] 54%|█████▍    | 33/61 [00:45<00:40,  1.45s/it] 56%|█████▌    | 34/61 [00:47<00:40,  1.49s/it] 57%|█████▋    | 35/61 [00:48<00:38,  1.49s/it] 59%|█████▉    | 36/61 [00:49<00:34,  1.38s/it] 61%|██████    | 37/61 [00:50<00:31,  1.32s/it] 62%|██████▏   | 38/61 [00:52<00:31,  1.36s/it] 64%|██████▍   | 39/61 [00:53<00:29,  1.33s/it] 66%|██████▌   | 40/61 [00:55<00:29,  1.39s/it] 67%|██████▋   | 41/61 [00:56<00:28,  1.45s/it] 69%|██████▉   | 42/61 [00:58<00:28,  1.47s/it] 70%|███████   | 43/61 [00:59<00:26,  1.46s/it] 72%|███████▏  | 44/61 [01:01<00:25,  1.50s/it] 74%|███████▍  | 45/61 [01:02<00:23,  1.47s/it] 75%|███████▌  | 46/61 [01:04<00:22,  1.48s/it] 77%|███████▋  | 47/61 [01:05<00:20,  1.49s/it] 79%|███████▊  | 48/61 [01:06<00:18,  1.43s/it] 80%|████████  | 49/61 [01:08<00:17,  1.42s/it] 82%|████████▏ | 50/61 [01:09<00:14,  1.35s/it] 84%|████████▎ | 51/61 [01:10<00:13,  1.33s/it] 85%|████████▌ | 52/61 [01:11<00:11,  1.29s/it] 87%|████████▋ | 53/61 [01:13<00:10,  1.28s/it] 89%|████████▊ | 54/61 [01:14<00:09,  1.32s/it] 90%|█████████ | 55/61 [01:16<00:08,  1.38s/it] 92%|█████████▏| 56/61 [01:17<00:07,  1.42s/it] 93%|█████████▎| 57/61 [01:19<00:05,  1.49s/it] 95%|█████████▌| 58/61 [01:20<00:04,  1.42s/it] 97%|█████████▋| 59/61 [01:21<00:02,  1.36s/it] 98%|█████████▊| 60/61 [01:22<00:01,  1.31s/it]100%|██████████| 61/61 [01:23<00:00,  1.08s/it]100%|██████████| 61/61 [01:23<00:00,  1.37s/it]num TCs: 0
-num ARs: 25
-calculating centroids..
-
-extracting event types..
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-computing event types
-calculating genesis and termination frequencies..
-generating histograms..
-generating frequency maps..
-visualizing frequency map : Genesis frequency map of TCs
-initializing.. Genesis frequency map of TCs
-drawing frequencies.. Genesis frequency map of TCs
-Error when analyzing events :  Contour levels must be increasing
-Visualizing events...
-generating images..
-/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/matplotlib/contour.py:1494: UserWarning: Warning: converting a masked element to nan.
-  self.zmax = float(z.max())
-/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/matplotlib/contour.py:1495: UserWarning: Warning: converting a masked element to nan.
-  self.zmin = float(z.min())
-Error when visualizing events :  index 6 is out of bounds for axis 0 with size 1
-
-
-
-
-traceback :  multiprocessing.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/multiprocessing/pool.py", line 125, in worker
-    result = (True, func(*args, **kwds))
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/multiprocessing/pool.py", line 48, in mapstar
-    return list(map(*args))
-  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/visualize_events.py", line 95, in spawn
-    generatePNG(filename, input_data[int(i/8)].sel(variable="TMQ")[i%8],
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/xarray/core/dataarray.py", line 701, in __getitem__
-    return self.isel(indexers=self._item_key_to_dict(key))
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/xarray/core/dataarray.py", line 1106, in isel
-    variable = self._variable.isel(indexers, missing_dims=missing_dims)
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/xarray/core/variable.py", line 1120, in isel
-    return self[key]
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/xarray/core/variable.py", line 769, in __getitem__
-    data = as_indexable(self._data)[indexer]
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/site-packages/xarray/core/indexing.py", line 1302, in __getitem__
-    return array[key]
-IndexError: index 6 is out of bounds for axis 0 with size 1
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/trained_upernet/trained_upernet.py", line 45, in run
-    visualize_events(event_masks, inference, save_dir + 'pngs/')
-  File "/cluster/home/atabin/ClimateNet_AI4Good/climatenet/visualize_events.py", line 99, in visualize_events
-    pool.map(spawn, range(len(event_masks))) # this line is crashing
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/multiprocessing/pool.py", line 364, in map
-    return self._map_async(func, iterable, mapstar, chunksize).get()
-  File "/cluster/home/atabin/miniconda3/envs/climatenet/lib/python3.8/multiprocessing/pool.py", line 771, in get
-    raise self._value
-IndexError: index 6 is out of bounds for axis 0 with size 1
-
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0000.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0024.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0032.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0048.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0056.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0040.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0008.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Generating PNG for  /cluster/scratch/atabin/upernet/pngs/0016.png
-Contouring...
-Contouring events...
-Adding colorbar and legend...
-Saving figure...
-Done!
