@@ -1,15 +1,12 @@
 #!/bin/bash
 
 #SBATCH --job-name=ClimateNet
-
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --gpus-per-node=2
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=20G
+#SBATCH --gpus=1
+#SBATCH --gres=gpumem:12G
+#SBATCH --mem-per-cpu=16G
 #SBATCH --output=clim.out
 #SBATCH --error=clim.err
-#SBATCH --time=12:00:00
+#SBATCH --time=240
 
 python3 ./train.py 
 

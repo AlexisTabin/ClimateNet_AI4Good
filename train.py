@@ -44,12 +44,13 @@ def run():
         print('error in evaluating on test data...')
         print(e)
         traceback.print_exc()
+    
+    save_dir = config.save_dir
 
     # masks with 1==TC, 2==AR
     class_masks = model.predict(inference, save_dir=save_dir)
     event_masks = track_events(class_masks)  # masks with event IDs
 
-    save_dir = config.save_dir
     if config.with_analysis:
         try:
             analyze_events(event_masks, class_masks, save_dir + 'results/')
