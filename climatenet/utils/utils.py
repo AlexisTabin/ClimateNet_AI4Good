@@ -41,7 +41,6 @@ class Config():
         self.epochs = self.config_dict['epochs']
         self.fields = self.config_dict['fields']
         self.labels = self.config_dict['labels']
-        self.checkpoint = self.config_dict['checkpoint']
         self.is_already_trained = self.config_dict['is_already_trained']
         self.data_dir = self.config_dict['data_dir']
         self.save_dir = self.config_dict['save_dir']
