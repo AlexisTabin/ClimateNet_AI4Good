@@ -1,0 +1,50 @@
+self.device :  cuda
+train_path :  /cluster/work/igp_psr/ai4good/group-1b/data/train/
+val_path :  /cluster/work/igp_psr/ai4good/group-1b/data/val/
+inference_path :  /cluster/work/igp_psr/ai4good/group-1b/data/test/
+Loading data...
+|===========================================================================|
+|                  PyTorch CUDA memory summary, device ID 0                 |
+|---------------------------------------------------------------------------|
+|            CUDA OOMs: 0            |        cudaMalloc retries: 0         |
+|===========================================================================|
+|        Metric         | Cur Usage  | Peak Usage | Tot Alloc  | Tot Freed  |
+|---------------------------------------------------------------------------|
+| Allocated memory      |    2064 KB |    2064 KB |    2064 KB |       0 B  |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 B  |
+|       from small pool |    2064 KB |    2064 KB |    2064 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Active memory         |    2064 KB |    2064 KB |    2064 KB |       0 B  |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 B  |
+|       from small pool |    2064 KB |    2064 KB |    2064 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| GPU reserved memory   |    4096 KB |    4096 KB |    4096 KB |       0 B  |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 B  |
+|       from small pool |    4096 KB |    4096 KB |    4096 KB |       0 B  |
+|---------------------------------------------------------------------------|
+| Non-releasable memory |    2032 KB |    2045 KB |    4087 KB |    2055 KB |
+|       from large pool |       0 KB |       0 KB |       0 KB |       0 KB |
+|       from small pool |    2032 KB |    2045 KB |    4087 KB |    2055 KB |
+|---------------------------------------------------------------------------|
+| Allocations           |     498    |     498    |     498    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |     498    |     498    |     498    |       0    |
+|---------------------------------------------------------------------------|
+| Active allocs         |     498    |     498    |     498    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |     498    |     498    |     498    |       0    |
+|---------------------------------------------------------------------------|
+| GPU reserved segments |       2    |       2    |       2    |       0    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       2    |       2    |       2    |       0    |
+|---------------------------------------------------------------------------|
+| Non-releasable allocs |       1    |       2    |       2    |       1    |
+|       from large pool |       0    |       0    |       0    |       0    |
+|       from small pool |       1    |       2    |       2    |       1    |
+|---------------------------------------------------------------------------|
+| Oversize allocations  |       0    |       0    |       0    |       0    |
+|---------------------------------------------------------------------------|
+| Oversize GPU segments |       0    |       0    |       0    |       0    |
+|===========================================================================|
+
+Epoch 1:

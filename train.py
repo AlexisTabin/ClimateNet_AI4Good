@@ -28,13 +28,13 @@ def run():
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    checkpoint_path = config.checkpoint_path
+    checkpoint = config.checkpoint
     if not config.is_already_trained:
         model.train(train)
         model.evaluate(val)
-        model.save_model(checkpoint_path)
+        model.save_model(checkpoint)
     else:
-        model.load_model(checkpoint_path)
+        model.load_model(checkpoint)
 
     try:
         print('evaluating on test data...')

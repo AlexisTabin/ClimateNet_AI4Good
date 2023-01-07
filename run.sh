@@ -1,15 +1,17 @@
 #!/bin/bash
 
 #SBATCH --job-name=ClimateNet
+
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=4096
+#SBATCH --gpus-per-node=2
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G
 #SBATCH --output=clim.out
 #SBATCH --error=clim.err
 #SBATCH --time=12:00:00
 
-python3 ~/ClimateNet_AI4Good/train.py 
+python3 ./train.py 
 
 
 ### --- OLD VERSION --- ###

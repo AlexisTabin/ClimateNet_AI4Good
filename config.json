@@ -34,6 +34,6 @@
     "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "with_analysis": true,
     "with_visualization": true,
-    "cuda": false,
+    "cuda": true,
     "description": "The basic CGNet model. You can use this config to train your own model, or load it with our trained weights."
 }

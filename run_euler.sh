@@ -6,14 +6,12 @@
 
 # IMPORTANT : all the configurations are done in the config.json file
 
-cd ~/ClimateNet_AI4Good/
 git pull
 TAG=$(git rev-parse --short HEAD)
 
-mv lsf* old_lsf/
 source ~/.bashrc
 conda activate climatenet
-source $(pwd)/run.sh
+sbatch < run.sh
 
 
 
