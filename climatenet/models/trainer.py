@@ -15,6 +15,7 @@ from climatenet.models.unet import UNetResnet, UNet
 from climatenet.models.upernet import UperNet
 from climatenet.models.segnet import SegResNet, SegNet
 from climatenet.models.erfnet import ERFNet
+from climatenet.models.deeplabv3_plus_xception import DeepLab
 from climatenet.models.modules import *
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.losses import jaccard_loss
@@ -28,7 +29,8 @@ MODELS = {
     'unet': UNet,
     'segnetresnet': SegResNet,
     'segnet': SegNet,
-    'erfnet': ERFNet
+    'erfnet': ERFNet,
+    'deeplab': DeepLab
 }
 
 
