@@ -1,6 +1,6 @@
 {
-    "architecture": "segnet",
-    "save_dir": "./checkpoints/segnet/",
+    "architecture": "erfnet",
+    "save_dir": "./checkpoints/erfnet/",
     "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "seed": 42,
     "lr": 0.001,
@@ -34,5 +34,5 @@
     "with_analysis": true,
     "with_visualization": true,
     "cuda": true,
-    "description": "The basic SegNet model."
+    "description": "The basic ErfNet model."
 }
