@@ -1,6 +1,6 @@
 {
-    "architecture": "deeplab",
-    "save_dir": "./checkpoints/deeplab/",
+    "architecture": "unet",
+    "save_dir": "./checkpoints/unet/",
     "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "seed": 42,
     "lr": 0.001,
@@ -32,8 +32,8 @@
     ],
     "is_already_trained": false,
     "checkpoint": "checkpoints/cgnet.pth",
-    "with_analysis": false,
-    "with_visualization": false,
+    "with_analysis": true,
+    "with_visualization": true,
     "cuda": true,
-    "description": "The DeepLab V3+ architecture"
+    "description": "The basic UNet"
 }
