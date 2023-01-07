@@ -5,15 +5,14 @@ Created on Wed Apr 21 15:16:18 2021
 @author: Administrator
 """
 
-from climatenet.models.base_model import BaseModel
 import torch
-import math
 import torch.nn as nn
-import torch.nn.functional as F
-from torchvision import models
-import torch.utils.model_zoo as model_zoo
-from climatenet.utils.helpers import initialize_weights,set_trainable
 from itertools import chain
+from torchvision import models
+import torch.nn.functional as F
+from climatenet.models.base_model import BaseModel
+from climatenet.utils.helpers import initialize_weights,set_trainable
+
 '''
 'xception_65.pth'URL:https://github.com/zhangtianlun12/deeplabv3-/releases/download/v0.1/xception_65.pth
 '''
@@ -1003,7 +1002,7 @@ class Decoder(nn.Module):
 '''
 
 class DeepLab(BaseModel):
-    def __init__(self, num_classes, in_channels=3, backbone='xception', pretrained=True, 
+    def __init__(self, classes, in_channels=3, backbone='xception', pretrained=True, 
                 output_stride=16, freeze_bn=False,freeze_backbone=False, **_):
                 
         super(DeepLab, self).__init__()
@@ -1016,7 +1015,7 @@ class DeepLab(BaseModel):
             low_level_channels = 128
 
         self.ASSP = ASSP(in_channels=2048, output_stride=output_stride)
-        self.decoder = Decoder(low_level_channels, num_classes)
+        self.decoder = Decoder(low_level_channels, classes)
 
         if freeze_bn: self.freeze_bn()
         if freeze_backbone: 
