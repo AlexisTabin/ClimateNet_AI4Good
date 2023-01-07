@@ -1,8 +1,6 @@
 import torch
-from torch.autograd import Variable
-from torch import nn
-import numpy as np
 import torch.nn.functional as F
+
 
 def jaccard_loss(logits, true, eps=1e-7):
     """Computes the Jaccard loss, a.k.a the IoU loss.
@@ -18,7 +16,7 @@ def jaccard_loss(logits, true, eps=1e-7):
         jacc_loss: the Jaccard loss.
     """
     num_classes = logits.shape[1]
-    true_1_hot = torch.eye(num_classes)[true.squeeze(1)]
+    true_1_hot = torch.eye(num_classes, device="cuda")[true.squeeze(1)]
     true_1_hot = true_1_hot.permute(0, 3, 1, 2).float()
     probas = F.softmax(logits, dim=1)
     true_1_hot = true_1_hot.type(logits.type())
