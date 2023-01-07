@@ -28,13 +28,13 @@ def run():
     val = ClimateDatasetLabeled(val_path, config)
     inference = ClimateDataset(inference_path, config)
 
-    checkpoint = config.checkpoint
+    save_dir = config.save_dir
     if not config.is_already_trained:
         model.train(train)
         model.evaluate(val)
-        model.save_model(checkpoint)
+        model.save_model(save_dir)
     else:
-        model.load_model(checkpoint)
+        model.load_model(save_dir)
 
     try:
         print('evaluating on test data...')
@@ -45,7 +45,6 @@ def run():
         print(e)
         traceback.print_exc()
     
-    save_dir = config.save_dir
 
     # masks with 1==TC, 2==AR
     class_masks = model.predict(inference, save_dir=save_dir)
