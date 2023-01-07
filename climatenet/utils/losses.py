@@ -26,8 +26,7 @@ def jaccard_loss(logits, true, eps=1e-7):
     union = cardinality - intersection
     jacc_loss = (intersection / (union + eps)).mean()
     return (1 - jacc_loss)
-<<<<<<< HEAD
-=======
+
 
 def dice_loss(logits, true, eps=1e-7):
     """Computes the Dice loss, which is more robust to unbalanced data.
@@ -53,4 +52,4 @@ def dice_loss(logits, true, eps=1e-7):
     union = cardinality - intersection
     dice_loss = (intersection*2 / (union + intersection + eps)).mean()
     return (1 - dice_loss)
->>>>>>> 34bd90a (add dice loss)
+
