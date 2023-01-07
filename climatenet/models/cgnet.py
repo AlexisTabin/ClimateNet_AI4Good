@@ -15,10 +15,6 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from climatenet.models.modules import *
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.losses import jaccard_loss
-from climatenet.utils.metrics import get_cm, get_iou_perClass
-from climatenet.utils.utils import Config
 
 
 class CGNet(nn.Module):
@@ -124,5 +120,6 @@ class CGNet(nn.Module):
         classifier = self.classifier(output2_cat)
 
         # upsample segmenation map ---> the input image size
-        out = F.interpolate(classifier, input.size()[2:], mode='bilinear', align_corners=False)  # Upsample score map, factor=8
+        out = F.interpolate(classifier, input.size()[
+                            2:], mode='bilinear', align_corners=False)  # Upsample score map, factor=8
         return out

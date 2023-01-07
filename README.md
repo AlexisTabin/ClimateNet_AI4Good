@@ -10,6 +10,21 @@ Path to directory on Euler cluster : `/cluster/work/igp_psr/ai4good/group-1b`
 
 [How to use VSCode on Euler Cluster](https://scicomp.ethz.ch/wiki/VSCode)
 
+## Installation
+
+### Conda
+
+```bash
+conda env create -f environment.yml
+conda activate climatenet
+```
+
+### To update the environment
+
+```bash
+    conda env export --no-builds | grep -v "^prefix: " > environment.yml
+```
+
 ## Usage
 
 Install the conda environment using `conda env create -f conda_env.yml`.

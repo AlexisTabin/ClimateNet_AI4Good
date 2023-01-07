@@ -1,8 +1,6 @@
 import torch
-from torch.autograd import Variable
-from torch import nn
-import numpy as np
 import torch.nn.functional as F
+
 
 def jaccard_loss(logits, true, eps=1e-7):
     """Computes the Jaccard loss, a.k.a the IoU loss.

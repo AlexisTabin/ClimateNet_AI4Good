@@ -2,6 +2,7 @@ import json
 import torch
 import numpy as np
 
+
 class Config():
     '''
     Abstracts over a model configuration.
@@ -28,7 +29,7 @@ class Config():
     '''
 
     def __init__(self, path: str):
-        self.config_dict = json.load(open(path))['model']
+        self.config_dict = json.load(open(path))
 
         # TODO: Check structure
 
@@ -40,13 +41,14 @@ class Config():
         self.epochs = self.config_dict['epochs']
         self.fields = self.config_dict['fields']
         self.labels = self.config_dict['labels']
-        self.checkpoint_path = self.config_dict['checkpoint_path']
+        self.checkpoint = self.config_dict['checkpoint']
         self.is_already_trained = self.config_dict['is_already_trained']
         self.data_dir = self.config_dict['data_dir']
         self.save_dir = self.config_dict['save_dir']
         self.with_analysis = self.config_dict['with_analysis']
         self.with_visualization = self.config_dict['with_visualization']
         self.description = self.config_dict['description']
+        self.cuda = self.config_dict['cuda']
 
         # Make reproducible
         torch.manual_seed(self.seed)
@@ -55,4 +57,3 @@ class Config():
     def save(self, save_path: str):
         with open(save_path, 'w', encoding='utf-8') as f:
             json.dump(self.config_dict, f, ensure_ascii=False, indent=4)
-        

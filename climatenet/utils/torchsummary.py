@@ -8,6 +8,7 @@ import numpy as np
 import torch.nn as nn
 from collections import OrderedDict
 
+
 def summary(model, input_shape, batch_size=-1, intputshow=True):
 
     def register_hook(module):
@@ -28,8 +29,8 @@ def summary(model, input_shape, batch_size=-1, intputshow=True):
                 params += torch.prod(torch.LongTensor(list(module.bias.size())))
             summary[m_key]["nb_params"] = params
 
-        if (not isinstance(module, nn.Sequential) and not isinstance(module, nn.ModuleList) 
-                    and not (module == model)) and 'torch' in str(module.__class__):
+        if (not isinstance(module, nn.Sequential) and not isinstance(module, nn.ModuleList)
+                and not (module == model)) and 'torch' in str(module.__class__):
             if intputshow is True:
                 hooks.append(module.register_forward_pre_hook(hook))
             else:
@@ -50,7 +51,8 @@ def summary(model, input_shape, batch_size=-1, intputshow=True):
     model_info = ''
 
     model_info += "-----------------------------------------------------------------------\n"
-    line_new = "{:>25}  {:>25} {:>15}".format("Layer (type)", "Input Shape", "Param #")
+    line_new = "{:>25}  {:>25} {:>15}".format(
+        "Layer (type)", "Input Shape", "Param #")
     model_info += line_new + '\n'
     model_info += "=======================================================================\n"
 
@@ -78,7 +80,8 @@ def summary(model, input_shape, batch_size=-1, intputshow=True):
     model_info += "=======================================================================\n"
     model_info += "Total params: {0:,}\n".format(total_params)
     model_info += "Trainable params: {0:,}\n".format(trainable_params)
-    model_info += "Non-trainable params: {0:,}\n".format(total_params - trainable_params)
+    model_info += "Non-trainable params: {0:,}\n".format(
+        total_params - trainable_params)
     model_info += "-----------------------------------------------------------------------\n"
 
     return model_info

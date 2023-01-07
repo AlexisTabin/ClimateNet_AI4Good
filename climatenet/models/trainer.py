@@ -4,13 +4,11 @@ from os import path
 import gc
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import xarray as xr
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from torchsummary import summary
 
 from climatenet.models.cgnet import CGNet
 from climatenet.models.unet import UNetResnet, UNet
@@ -72,13 +70,22 @@ class Trainer():
         if config is not None:
             # Create new model
             self.config = config
-            self.network = MODELS[model_name](classes=len(
-                self.config.labels), channels=len(list(self.config.fields))).cuda()
+            if self.config.cuda:
+                self.network = MODELS[model_name](classes=len(
+                    self.config.labels), channels=len(list(self.config.fields))).cuda()
+            else:
+                self.network = MODELS[model_name](classes=len(
+                    self.config.labels), channels=len(list(self.config.fields)))
+            
         elif model_path is not None:
             # Load model
             self.config = Config(path.join(model_path, 'config.json'))
-            self.network = MODELS[model_name](classes=len(
-                self.config.labels), channels=len(list(self.config.fields))).cuda()
+            if self.config.cuda:
+                self.network = MODELS[model_name](classes=len(
+                    self.config.labels), channels=len(list(self.config.fields))).cuda()
+            else :
+                self.network = MODELS[model_name](classes=len(
+                    self.config.labels), channels=len(list(self.config.fields)))
             self.network.load_state_dict(torch.load(
                 path.join(model_path, 'weights.pth')))
         else:
@@ -94,8 +101,6 @@ class Trainer():
         torch.cuda.empty_cache()
         gc.collect()
         self.network.train()
-        print('...SUMMARY...')
-        print(summary(self.network, (3, 100, 100)))
         collate = ClimateDatasetLabeled.collate
         loader = DataLoader(dataset, batch_size=self.config.train_batch_size,
                             collate_fn=collate, num_workers=4, shuffle=True)

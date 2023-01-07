@@ -8,6 +8,7 @@ from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
 from climatenet.utils.utils import Config
 from climatenet.visualize_events import visualize_events
 
+
 def run():
     config = Config('config.json')
     model_name = config.architecture
@@ -16,7 +17,7 @@ def run():
     data_dir = config.data_dir
     train_path = data_dir + 'train/'
     val_path = data_dir + 'val/'
-    inference_path = data_dir + 'test/' 
+    inference_path = data_dir + 'test/'
 
     print('train_path : ', train_path)
     print('val_path : ', val_path)
@@ -34,8 +35,8 @@ def run():
         model.save_model(checkpoint_path)
     else:
         model.load_model(checkpoint_path)
-        
-    try :
+
+    try:
         print('evaluating on test data...')
         test = ClimateDatasetLabeled(inference_path, config)
         model.evaluate(test)
@@ -44,12 +45,13 @@ def run():
         print(e)
         traceback.print_exc()
 
-    class_masks = model.predict(inference, save_dir=save_dir) # masks with 1==TC, 2==AR
-    event_masks = track_events(class_masks) # masks with event IDs
+    # masks with 1==TC, 2==AR
+    class_masks = model.predict(inference, save_dir=save_dir)
+    event_masks = track_events(class_masks)  # masks with event IDs
 
     save_dir = config.save_dir
     if config.with_analysis:
-        try :
+        try:
             analyze_events(event_masks, class_masks, save_dir + 'results/')
         except Exception as e:
             print("Error when analyzing events : ", e)
@@ -58,7 +60,7 @@ def run():
             # print('traceback : ', traceback.format_exc())
 
     if config.with_visualization:
-        try : 
+        try:
             print('-'*50)
             print('visualizing inference events...')
             print('-'*50)
@@ -69,6 +71,7 @@ def run():
             print('\n'*3)
             print('traceback : ', traceback.format_exc())
             pass
+
 
 if __name__ == '__main__':
     run()

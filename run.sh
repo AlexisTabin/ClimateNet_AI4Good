@@ -9,7 +9,7 @@
 #SBATCH --error=clim.err
 #SBATCH --time=12:00:00
 
-python3 ~/ClimateNet_AI4Good/run.py 
+python3 ~/ClimateNet_AI4Good/train.py 
 
 
 ### --- OLD VERSION --- ###
