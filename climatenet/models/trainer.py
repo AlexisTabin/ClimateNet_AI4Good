@@ -18,7 +18,7 @@ from climatenet.models.erfnet import ERFNet
 from climatenet.models.deeplabv3_plus_xception import DeepLab
 from climatenet.models.modules import *
 from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.losses import jaccard_loss
+from climatenet.utils.losses import jaccard_loss, dice_loss
 from climatenet.utils.metrics import get_cm, get_iou_perClass
 from climatenet.utils.utils import Config
 
@@ -116,6 +116,7 @@ class Trainer():
                 self.optimizer.zero_grad()
 
                 # Runs the forward pass with autocasting.
+
                 # with autocast(device_type='cuda', dtype=torch.float16):
                 # Push data on GPU and pass forward
                 features = torch.tensor(features.values).cuda()
@@ -124,6 +125,8 @@ class Trainer():
                 outputs = torch.softmax(self.network(features), 1)
                 # Pass backward
                 loss = jaccard_loss(outputs, labels)
+                # loss = dice_loss(outputs, labels)  
+
 
                 # Scales loss.  Calls backward() on scaled loss to create scaled gradients.
                 # Backward passes under autocast are not recommended.
