@@ -1,95 +1,85 @@
 # Curriculum Learning
 
-This model is specifically build to adress the task of extreme weather event detection via curriculum learning. However, it further comprises options to tackle the task in an ordinary manner with adjustable hyperparameter choices. For consistency reasons, the used architectures resemble the ones at [https://portal.nersc.gov/project/ClimateNet/](https://portal.nersc.gov/project/ClimateNet/) but are embedded via torchgeo. 
+This model is specifically build to address the task of extreme weather event detection via curriculum learning (CL). However, it further comprises options to tackle the task in an ordinary manner with adjustable hyperparameter choices. For consistency reasons, the used architectures resemble the ones at [https://portal.nersc.gov/project/ClimateNet/](https://portal.nersc.gov/project/ClimateNet/) but are embedded via torchgeo. 
 
 # Setup
 
-1. Install and activate the environment
+Install and activate the environment
 ```shell
-pip -r requirements.txt
-conda activate cl
+$ conda env create -f environment.yml
+$ conda activate cl
 ```
-2. Set the environment paths
-```shell
-touch .env
-nano .env
 
+# Data
 
+The data is available at [ClimateNet](https://portal.nersc.gov/project/ClimateNet/) and must be downloaded manually. To retrain the model, the following folder hierarchy is required:
+```
+cl
+|
+└───data
+      |
+      └───train
+      |
+      └───val
+      |
+      └───test
 ```
 
 # Usage
+All setup and hyperparameters are controlled via a config file. Even though most variables have default values, the paths must be set in advance by each user. In order to do so, adjust the following entries in the configuration file:
 
-To train the model without 
-
-
-
-## Euler setup
-
-Path to directory on Euler cluster : `/cluster/work/igp_psr/ai4good/group-1b`
-
-[How to access the cluster](https://scicomp.ethz.ch/wiki/Accessing_the_clusters)
-
-[How to use VSCode on Euler Cluster](https://scicomp.ethz.ch/wiki/VSCode)
-
-## Usage
-
-Install the conda environment using `conda env create -f conda_env.yml`.
-
-You can find the data and a pre-trained model at [https://portal.nersc.gov/project/ClimateNet/](https://portal.nersc.gov/project/ClimateNet/).
-Download the train and test data and the trained model, and you're good-to-go.
-
-The high-level API makes it easy to train a model from scratch or to use our models to run inference on your own climate data. Just download the model config (or write your own) and train the model using:
-
-```python
-config = Config('PATH_TO_CONFIG')
-model = CGNet(config)
-
-training_set = ClimateDatasetLabeled('PATH_TO_TRAINING_SET', model.config)
-inference_set = ClimateDataset('PATH_TO_INFERENCE_SET', model.config)
-
-model.train(training_set)
-model.save_model('PATH_TO_SAVE')
-
-predictions = model.predict(inference_set)
+Data directories
+```yaml
+data_path: <path to data folder>
+repo_path: <path to repository>
+log_path: <path to logging folder>
 ```
 
-You can find an example of how to load our trained model for inference in example.py.
-
-If you are familiar with PyTorch and want a higher degree of control over training procedures, data flow or other aspects of your project, we suggest you use our lower-level modules.
-The CGNetModule and Dataset classes conform to what you would expect from standard PyTorch, which means that you can take whatever parts you need and swap out the others for your own building blocks. A quick example of this:
-
-```python
-training_data = ... # Plug in your own Dataloader and data handling
-cgnet = CGNetModule(classes=3, channels=4)
-optimizer = Adam(cgnet.parameters(), ...)      
-for features, labels in epoch_loader:
-    outputs = softmax(cgnet(features), 1)
-
-    loss = jaccard_loss(outputs, labels) # Or plug in your own loss...
-    loss.backward()
-    optimizer.step()
-    optimizer.zero_grad() 
+Logging with wandb
+```yaml
+[wandb]
+entity: <wandb entity>
+project: <wandb project> 
 ```
 
-## Data
+Checkpoint folder for CL learning
+```yaml
+[logging]
+log_nr: <Logging folder for this specific run>
+```
 
-Climate data can be complex. In order to avoid hard-to-debug issues when reading and interpreting the data, we require the data to adhere to a strict interface when using the high-level abstractions. We're working on conforming to the NetCDF Climate and Forecast Metadata Conventions in order to provide maximal flexibility while still making sure that your data gets interpreted the right way by the models.
+Then run training via the following command from inside the cl folder
+```shell
+$ python model.py
+```
+or if on euler, run 
+```shell
+$ sbatch run_slurm.sh
+```
+with the correct path to the data store
+
 
 ## Configurations
 
-When creating a (high-level) model, you need to specify a configuration - on one hand this encourages reproducibility and makes it easy to track and share experiments, on the other hand it helps you avoid issues like running a model that was trained on one variable on an unrelated variable or using the wrong normalisation statistics.
-See config.json for an example configuration file.
+**Hyperparameters**
+In the `config.yaml` file, hyperparameters for the trainer, model and datamodule can be set, where the variable names are self-explanatory. Note that the only available models are `unet` and `deeplabv3+`
+Further, parameters for curriculum learning are adjustable. These are explained in the following:
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+- `mode`: choose between base(train on entire map), patch(train on all patches of each image) and cl(curriculum learning)
+- `patch_size`: side length of squared patches
+- `stride`: stride during extraction (control overlap and amount of samples)
+- `extract`: Boolean, True means that extraction of patches has not happened before or should be overwritten, False starts training without new data extraction
+- `max_nr_patches`: amount of patches taken per image for each group represented in the stage (see CL section in report)
+- `var_list`: channels that are extracted for training (choose from all 16 and separate by comma)
+- `nr_stages`: amount of stages in curriculum, note that max_epochs then has to be a list equivalent length where each entry is the amount of epochs to train for in the respective stage
 
-Please make sure to update tests as appropriate.
+**Curriculum**
+The curriculum can be adjusted in `curriculum.txt`. It is designed as a dictionary declaring the stage and the chosen groups for the respective stage. When newly designing a curriculum, choose from the eight groups BG, AR_o, AR, TC_o, TC, M_o, M, R(random). Groups can also appear more than once per curriculum.
+Don't forget to set `extract` to true if a new curriculum should be applied.
 
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
 
-Please cite the relevant papers if this repository is helpful in your research.
 
-Dataset: https://gmd.copernicus.org/articles/14/107/2021/
 
-Methods: https://ai4earthscience.github.io/neurips-2020-workshop/papers/ai4earth_neurips_2020_55.pdf
+
+
+
