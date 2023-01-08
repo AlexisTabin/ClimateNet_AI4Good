@@ -10,7 +10,6 @@ import numpy as np
 import xarray as xr
 
 #model
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import torch
 from torch.utils.data import DataLoader, Dataset
 
