@@ -1,17 +1,17 @@
 
 [path]
-data_path: /cluster/scratch/earens/ai4good_data/
-repo_path: /cluster/home/earens/ai4good/ClimateNet_AI4Good/
-log_path: /cluster/scratch/earens/a4g-logs/
+data_path: <path to data folder>
+repo_path: <path to repository>
+log_path: <path to logging folder>
 
 [wandb]
-entity: ai4good
-project: segment_from_scratch
+entity: <wandb entity>
+project: <wandb project> 
 
 [trainer]
 gpus: 1
 min_epochs: 1
-max_epochs: 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,6
+max_epochs: 10
 auto_lr_find: True
 auto_scale_batch_size: False
 precision: 16
@@ -33,14 +33,14 @@ batch_size: 16
 num_workers: 2
 
 [cl]
-mode: cl
+mode: base
 patch_size: 128
 stride: 90
-extract: True
+extract: False
 max_nr_patches: 5
 var_list: TMQ,U850,V850,PRECT
 nr_stages: 20
 
 
 [logging]
-log_nr: cl_complex_smooth_2
+log_nr: <Logging folder for this specific run>

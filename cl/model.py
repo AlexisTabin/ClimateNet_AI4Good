@@ -76,10 +76,13 @@ elif config['cl']['mode'] == 'cl':
     #only if new curriculum or different patch size
     if config['cl']['extract'] == 'True':
 
-        #clear folder for new curriculum
-        print('Clear folder for new Curriculum')
-        shutil.rmtree(f'{DATA_PATH}cl/{patch_size}/')
-        print('Folder emptied.')
+        try:
+            #clear folder for new curriculum
+            print('Clear folder for new Curriculum')
+            shutil.rmtree(f'{DATA_PATH}cl/{patch_size}/')
+            print('Folder emptied.')
+        except:
+            pass
 
         #extract data and create training stages
         from utils import cl_prep

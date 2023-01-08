@@ -8,11 +8,11 @@ source ~/.bashrc
 source activate
 conda deactivate 
 
-conda activate tcd
+conda activate cl
 
 
 
-python ~/ai4good/ClimateNet_AI4Good/model.py
+python ~/ClimateNet_AI4Good/cl/model.py
 
 
 exit 0
