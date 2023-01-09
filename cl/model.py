@@ -22,7 +22,6 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 
 #logging
-import wandb
 from torchmetrics import ClasswiseWrapper,JaccardIndex,MetricCollection
 
 
@@ -241,6 +240,7 @@ class Model_Task(SemanticSegmentationTask):
         self.train_metrics = metrics.clone(prefix = 'train_')
         self.val_metrics = self.train_metrics.clone(prefix="val_")
         self.test_metrics = self.train_metrics.clone(prefix="test_")
+        self.log_wandb = kwargs["log_wandb"]
 
     #overwrite standard validation step to apply custom metrics and log maps to wandb
     def validation_step(self, batch, batch_idx):
@@ -275,7 +275,8 @@ class Model_Task(SemanticSegmentationTask):
             overlay =  0.4 * gt_masks + 0.6 * pred_masks
 
             #log process
-            wandb.log({"True Ground": wandb.Image(gt_masks),
+            if self.log_wandb:
+                wandb.log({"True Ground": wandb.Image(gt_masks),
                        "Prediction": wandb.Image(pred_masks),
                        "Overlay": wandb.Image(overlay)}) 
 
@@ -304,10 +305,11 @@ class Model_Task(SemanticSegmentationTask):
         pred_masks = np.transpose(pred_masks,(1,2,0))
 
         overlay =  0.4 * gt_masks + 0.6 * pred_masks
-
-        wandb.log({"True Ground Test": wandb.Image(gt_masks),
-                    "Prediction Test": wandb.Image(pred_masks),
-                    "Overlay Test": wandb.Image(overlay)})     
+        
+        if self.log_wandb:
+            wandb.log({"True Ground Test": wandb.Image(gt_masks),
+                        "Prediction Test": wandb.Image(pred_masks),
+                        "Overlay Test": wandb.Image(overlay)})     
             
 
     #update metric values
@@ -340,9 +342,11 @@ class Model_Task(SemanticSegmentationTask):
 
 
 if __name__ == "__main__":
-    
-    #set up wandb logging
-    wandb.init(entity=config['wandb']['entity'], project=config['wandb']['project'])
+    log_wandb = False
+    #set up optional wandb logging
+    if log_wandb:
+        import wandb
+        wandb.init(entity=config['wandb']['entity'], project=config['wandb']['project'])
     
     #create logging dir
     log_spot = config["logging"]["log_nr"]
@@ -360,8 +364,9 @@ if __name__ == "__main__":
             save_last=True,
     )
 
-    
-    wandb_logger = WandbLogger(entity=config['wandb']['entity'], log_model=True, project=config['wandb']['project'])
+    wandb_logger = None
+    if log_wandb:
+        wandb_logger = WandbLogger(entity=config['wandb']['entity'], log_model=True, project=config['wandb']['project'])
 
     #vanilla training
     if mode == 'base':
@@ -380,7 +385,7 @@ if __name__ == "__main__":
         learning_rate=float(config["model"]["learning_rate"]),
         learning_rate_schedule_patience=int(
             config["model"]["learning_rate_schedule_patience"]),
-        )
+        log_wandb=log_wandb)
 
         #generate Trainer and fit on data
         trainer = Trainer(
@@ -395,7 +400,8 @@ if __name__ == "__main__":
 
         trainer.fit(task, datamodule=data_module)
         trainer.test(model=task, datamodule = data_module)
-        wandb.finish()
+        if log_wandb:
+            wandb.finish()
     
     #cl learning: loop over stages and read and write from same checkpoint store
     else: 
@@ -420,7 +426,7 @@ if __name__ == "__main__":
             learning_rate=float(config["model"]["learning_rate"]),
             learning_rate_schedule_patience=int(
                 config["model"]["learning_rate_schedule_patience"]),
-            )
+            log_wandb=False)
 
             if i == 0: #first round, no checkpoints available yet
                 trainer = Trainer(
@@ -454,7 +460,8 @@ if __name__ == "__main__":
 
         #test model and finish wandb
         trainer.test(model=task, datamodule = data_module)
-        wandb.finish()
+        if log_wandb:
+            wandb.finish()
 
 
     
