@@ -1,18 +1,19 @@
 
 [path]
-data_path: /cluster/work/igp_psr/ai4good/group-1b/data/
+data_path: <path to data>
 repo_path: <path to repository>
-log_path: /cluster/scratch/krasnopk/debug_log
+log_path: ./cl/checkpoints/
+eval_checkpoint: epoch=23-step=1176.ckpt
 
 [wandb]
 log_wandb: False 
-entity: debug
-project: debug 
+entity: <entity>
+project: <project> 
 
 [trainer]
 gpus: 1
 min_epochs: 1
-max_epochs: 10
+max_epochs: 3,3,3,3,3,3,6
 auto_lr_find: True
 auto_scale_batch_size: False
 precision: 16
@@ -20,7 +21,7 @@ max_time: 00:23:50:00
 
 [model]
 loss: focal 
-segmentation_model: unet
+segmentation_model: deeplabv3+
 backbone: resnet18
 learning_rate: 1e-3
 pretrained: True
@@ -34,14 +35,14 @@ batch_size: 32
 num_workers: 1
 
 [cl]
-mode: base
+mode: cl
 patch_size: 128
 stride: 90
 extract: False
 max_nr_patches: 5
 var_list: TMQ,U850,V850,PRECT
-nr_stages: 20
+nr_stages: 7
 
 
 [logging]
-log_nr: <Logging folder for this specific run>
+log_nr: <experiment number>
