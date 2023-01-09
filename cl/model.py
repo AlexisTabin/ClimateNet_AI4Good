@@ -27,7 +27,7 @@ from torchmetrics import ClasswiseWrapper,JaccardIndex,MetricCollection
 # collect data and create dataset
 class ImageDataset(Dataset):
     def __init__(self, split, path, stage, var_list, mode):
-        super().__init__()
+
         self.data_path = path #path to data
         self.var_list = var_list #channels to train on
         self.split = split #train, test, validation
@@ -50,7 +50,7 @@ class ImageDataset(Dataset):
         img_name = self.file_names[idx]
 
         try:  
-            if self.mode != 'cl':  
+            if self.mode != 'cl':
                 data = xr.load_dataset(f'{self.data_path}{self.split}/{img_name}')
             
             else: #if cl, dataset depends on current stage during training
@@ -100,8 +100,7 @@ class Data(LightningDataModule):
     def train_dataloader(self):
 
         split = "train"
-        train_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
-        
+        train_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"].split(','), mode=self.mode)
         train_dataloader = DataLoader(
             train_data,
             batch_size=int(self.config["datamodule"]["batch_size"]),
@@ -115,7 +114,7 @@ class Data(LightningDataModule):
     def val_dataloader(self):    
 
         split = "val"
-        val_data = ImageDataset(split,self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
+        val_data = ImageDataset(split,self.path, self.stage, var_list=self.config["cl"]["var_list"].split(','), mode=self.mode)
         val_dataloader = DataLoader(
             val_data,
             batch_size=int(self.config["datamodule"]["batch_size"]),
@@ -129,7 +128,7 @@ class Data(LightningDataModule):
     def test_dataloader(self):
 
         split = "test"
-        test_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
+        test_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"].split(','), mode=self.mode)
         
         test_dataloader = DataLoader(
             test_data,
@@ -391,7 +390,7 @@ def curriculum_train(config):
 
         trainer.fit(task, datamodule=data_module)
         trainer.test(model=task, datamodule = data_module)
-        if config["log_wandb"]:
+        if config["wandb"]["log_wandb"]=="True":
             wandb.finish()
     
     #cl learning: loop over stages and read and write from same checkpoint store
@@ -417,7 +416,7 @@ def curriculum_train(config):
             learning_rate=float(config["model"]["learning_rate"]),
             learning_rate_schedule_patience=int(
                 config["model"]["learning_rate_schedule_patience"]),
-            log_wandb=config["log_wandb"])
+            log_wandb=config["wandb"]["log_wandb"]=="True")
 
             if i == 0: #first round, no checkpoints available yet
                 trainer = Trainer(
@@ -451,7 +450,7 @@ def curriculum_train(config):
 
         #test model and finish wandb
         trainer.test(model=task, datamodule = data_module)
-        if config["log_wandb"]:
+        if config["wandb"]["log_wandb"]=="True":
             wandb.finish()
 
 
@@ -473,11 +472,8 @@ def curriculum_evaluate(config):
             save_last=True,
     )
     wandb_logger = None
-    if config["log_wandb"]:
+    if config["wandb"]["log_wandb"]=="True":
         wandb_logger = WandbLogger(entity=config['wandb']['entity'], log_model=True, project=config['wandb']['project'])
-
-    checkpoints = os.listdir(f'{log_dir}checkpoints')
-    checkpoint = checkpoints[-1]
 
     #extract lists from config
     var_list = config["cl"]["var_list"].split(',')
@@ -488,13 +484,14 @@ def curriculum_evaluate(config):
                 callbacks=[checkpoint_callback],
                 logger= wandb_logger,
                 accelerator="gpu",
-                max_epochs=int(epoch_lengths[i]),
                 max_time=config["trainer"]["max_time"],
                 auto_lr_find=config["trainer"]["auto_lr_find"] == "True",
                 auto_scale_batch_size=config["trainer"]["auto_scale_batch_size"] == "True",
                 )
 
-    task = Model_Task(
+    checkpoint_file = os.path.join(config["path"]["log_path"], config["path"]["eval_checkpoint"])
+
+    model = Model_Task.load_from_checkpoint(checkpoint_file, 
             segmentation_model=config["model"]["segmentation_model"],
             encoder_name=config["model"]["backbone"],
             encoder_weights="imagenet" if config["model"]["pretrained"] == "True" else "None",
@@ -505,17 +502,19 @@ def curriculum_evaluate(config):
             learning_rate=float(config["model"]["learning_rate"]),
             learning_rate_schedule_patience=int(
                 config["model"]["learning_rate_schedule_patience"]),
-            log_wandb=config["log_wandb"])
+            log_wandb=config["wandb"]["log_wandb"]=="True")
 
+    model.eval()
+    
     patch_size = int(config['cl']['patch_size'])
     if patch_size % 32 != 0:
             patch_size += 32 - patch_size % 32 
 
     nr_stages = int(config["cl"]["nr_stages"])
 
-    data_module = Data(mode=config["cl"]["mode"], path=DATA_PATH, patch_size=patch_size, stage=nr_stages)
+    data_module = Data(config=config, mode=config["cl"]["mode"], path=DATA_PATH, patch_size=patch_size, stage=nr_stages)
 
-    trainer.test(model=task, datamodule = data_module)
+    trainer.validate(model=model, datamodule = data_module)
 
 
     
