@@ -30,7 +30,7 @@ be found [here.](cl/README.md)
 ### Baseline Extension
 
 The folder [`climatenet_plus`](climatenet_plus) contains the original code as well as supplementary code and material for extensions to 
-the baseline model. 
+the baseline model. For further information please see [here](climatenet_plus/README.md)
 
 ### Feature Selection
 
