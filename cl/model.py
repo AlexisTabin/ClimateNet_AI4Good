@@ -400,7 +400,7 @@ def curriculum_train(config):
 
         for i in range(nr_stages):
             print(f'Starting training round {i}')
-            data_module = Data(mode=mode, path=DATA_PATH, stage = i+1)
+            data_module = Data(patch_size=patch_size, config=config, mode=mode, path=DATA_PATH, stage = i+1)
             stage_nr = i+1
 
     
