@@ -7,7 +7,7 @@ This model is specifically build to address the task of extreme weather event de
 Install and activate the environment
 ```shell
 $ conda env create -f environment.yml
-$ conda activate cl
+$ conda activate climatenet
 ```
 
 # Data
@@ -48,9 +48,9 @@ Checkpoint folder for CL learning
 log_nr: <Logging folder for this specific run>
 ```
 
-Then run training via the following command from inside the cl folder
+Then run training via the following command 
 ```shell
-$ python model.py
+$ python main.py --model curriculum mode train
 ```
 or if on euler, run 
 ```shell

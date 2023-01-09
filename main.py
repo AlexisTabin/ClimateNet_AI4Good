@@ -1,6 +1,6 @@
 import argparse
-from base_model import train, evaluate
-from climatenet_base.utils.utils import Config
+from climatenet_plus.base_model import train, evaluate
+from climatenet_plus.climatenet.utils.utils import Config
 from cl.model import curriculum_train, curriculum_evaluate
 from configparser import ConfigParser
 

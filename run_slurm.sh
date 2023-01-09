@@ -8,11 +8,9 @@ source ~/.bashrc
 source activate
 conda deactivate 
 
-conda activate cl
+conda activate climatenet
 
-
-
-python ~/ClimateNet_AI4Good/cl/model.py
+python main.py --model curriculum --mode train
 
 
 exit 0
