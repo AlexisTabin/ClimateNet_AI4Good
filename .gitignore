@@ -3,7 +3,6 @@ __pycache__/
 wandb
 .idea/
 Untitled-1.ipynb
-climatenet_plus
 data
 experiments
 io
