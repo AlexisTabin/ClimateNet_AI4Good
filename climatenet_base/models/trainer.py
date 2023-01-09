@@ -99,7 +99,7 @@ class Trainer():
 
     def train(self, dataset: ClimateDatasetLabeled):
         '''Train the network on the given dataset for the given amount of epochs'''
-        print(torch.cuda.memory_summary(device=self.device, abbreviated=False))
+        # print(torch.cuda.memory_summary(device=self.device, abbreviated=False))
         torch.cuda.empty_cache()
         gc.collect()
         self.network.train()

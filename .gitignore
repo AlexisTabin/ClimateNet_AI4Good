@@ -9,3 +9,4 @@ experiments
 io
 profile.json
 test.html
+*.pyc

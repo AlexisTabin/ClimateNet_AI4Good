@@ -1,12 +1,13 @@
 
 [path]
-data_path: <path to data folder>
+data_path: /cluster/work/igp_psr/ai4good/group-1b/data/
 repo_path: <path to repository>
-log_path: <path to logging folder>
+log_path: /cluster/scratch/krasnopk/debug_log
 
 [wandb]
-entity: <wandb entity>
-project: <wandb project> 
+log_wandb: False 
+entity: debug
+project: debug 
 
 [trainer]
 gpus: 1
@@ -29,8 +30,8 @@ num_classes: 3
 
 
 [datamodule]
-batch_size: 16
-num_workers: 2
+batch_size: 32
+num_workers: 1
 
 [cl]
 mode: base

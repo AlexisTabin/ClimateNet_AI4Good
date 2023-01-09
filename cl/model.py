@@ -1,6 +1,5 @@
 
 #utils
-import configparser
 import shutil
 import os
 from decouple import config
@@ -25,81 +24,17 @@ from pytorch_lightning.loggers import WandbLogger
 from torchmetrics import ClasswiseWrapper,JaccardIndex,MetricCollection
 
 
-#set mode for training, default base (whole image), choose from base, patch, cl
-mode = 'base'
-
-
-#read in config file
-config = configparser.ConfigParser()
-config.read('config.yaml')
-
-
-#set path to directories from config
-DATA_PATH = config['path']['data_path']
-LOG_PATH = config["path"]["log_path"]
-REPO_PATH = config["path"]["repo_path"]
-
-#extract lists from config
-var_list = config["cl"]["var_list"].split(',')
-epoch_lengths = config["trainer"]["max_epochs"].split(',')
-epoch_lengths = np.cumsum(np.array([int(i) for i in epoch_lengths]))
-
-#read patch size and round to multiple of 32 (unet requires divisible by 32)
-patch_size = int(config['cl']['patch_size'])
-if patch_size % 32 != 0:
-        patch_size += 32 - patch_size % 32 
-
-
-# base training on full map
-if config['cl']['mode'] == 'base':
-    DATA_PATH = f'{DATA_PATH}'
-
-# training on patches
-elif config['cl']['mode'] == 'patch':
-    DATA_PATH = f'{DATA_PATH}{patch_size}/'
-
-    #only extract data if requested
-    if config['cl']['extract'] == 'True':
-        from utils import cl_prep
-        cl_prep.process_all_images(patch_size= patch_size, 
-                                    stride = int(config['cl']['stride']), vars = var_list, 
-                                    max_exp_patches = int(config['cl']['max_nr_patches']), mode = 'True')
-
-
-
-# cl
-elif config['cl']['mode'] == 'cl':
-    mode = 'cl'
-
-    #only if new curriculum or different patch size
-    if config['cl']['extract'] == 'True':
-
-        try:
-            #clear folder for new curriculum
-            print('Clear folder for new Curriculum')
-            shutil.rmtree(f'{DATA_PATH}cl/{patch_size}/')
-            print('Folder emptied.')
-        except:
-            pass
-
-        #extract data and create training stages
-        from utils import cl_prep
-        cl_prep.process_all_images(patch_size= patch_size, 
-                                    stride = int(config['cl']['stride']), vars = var_list, 
-                                    max_exp_patches = int(config['cl']['max_nr_patches']), mode = 'False')
-
-
-
 # collect data and create dataset
 class ImageDataset(Dataset):
-    def __init__(self, split, path, stage):
-
+    def __init__(self, split, path, stage, var_list, mode):
+        super().__init__()
         self.data_path = path #path to data
         self.var_list = var_list #channels to train on
         self.split = split #train, test, validation
         self.stage = stage
+        self.mode = mode
         
-        if mode != 'cl':
+        if self.mode != 'cl':
             self.file_names = os.listdir(f'{self.data_path}{self.split}')
         
         else: #in cl, extraction is different in train/val (subset of patches) compared to test(all patches)
@@ -115,7 +50,7 @@ class ImageDataset(Dataset):
         img_name = self.file_names[idx]
 
         try:  
-            if mode != 'cl':  
+            if self.mode != 'cl':  
                 data = xr.load_dataset(f'{self.data_path}{self.split}/{img_name}')
             
             else: #if cl, dataset depends on current stage during training
@@ -152,24 +87,26 @@ class Scheduler(pl.Callback):
 #create train, val and test datasets according to stage from Imagedataset
 class Data(LightningDataModule):
     
-    def __init__(self,  stage = 1):
+    def __init__(self, mode, path, patch_size, config, stage = 1):
         super().__init__()
         if mode != 'cl':
-            self.path = DATA_PATH
+            self.path = path
         else:
-            self.path = f'{DATA_PATH}cl/{patch_size}/'
+            self.path = f'{path}cl/{patch_size}/'
         self.stage = stage
+        self.mode = mode
+        self.config = config
       
     def train_dataloader(self):
 
         split = "train"
-        train_data = ImageDataset(split, self.path, self.stage)
+        train_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
         
         train_dataloader = DataLoader(
             train_data,
-            batch_size=int(config["datamodule"]["batch_size"]),
+            batch_size=int(self.config["datamodule"]["batch_size"]),
             shuffle=True,
-            num_workers=int(config["datamodule"]["num_workers"]),
+            num_workers=int(self.config["datamodule"]["num_workers"]),
             collate_fn=collate_fn,
             drop_last=True
         )
@@ -178,12 +115,12 @@ class Data(LightningDataModule):
     def val_dataloader(self):    
 
         split = "val"
-        val_data = ImageDataset(split,self.path, self.stage)
+        val_data = ImageDataset(split,self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
         val_dataloader = DataLoader(
             val_data,
-            batch_size=int(config["datamodule"]["batch_size"]),
+            batch_size=int(self.config["datamodule"]["batch_size"]),
             shuffle=False,
-            num_workers=int(config["datamodule"]["num_workers"]),
+            num_workers=int(self.config["datamodule"]["num_workers"]),
             collate_fn=collate_fn,
             drop_last=True
         )
@@ -192,13 +129,13 @@ class Data(LightningDataModule):
     def test_dataloader(self):
 
         split = "test"
-        test_data = ImageDataset(split, self.path, self.stage)
+        test_data = ImageDataset(split, self.path, self.stage, var_list=self.config["cl"]["var_list"], mode=self.mode)
         
         test_dataloader = DataLoader(
             test_data,
-            batch_size=int(config["datamodule"]["batch_size"]),
+            batch_size=int(self.config["datamodule"]["batch_size"]),
             shuffle=False,
-            num_workers=int(config["datamodule"]["num_workers"]),
+            num_workers=int(self.config["datamodule"]["num_workers"]),
             collate_fn=collate_fn,
             drop_last=True
         )
@@ -341,16 +278,70 @@ class Model_Task(SemanticSegmentationTask):
         self.train_metrics.reset()
 
 
-if __name__ == "__main__":
-    log_wandb = False
+def curriculum_train(config):
+    mode = config["cl"]["mode"]
     #set up optional wandb logging
-    if log_wandb:
+    if config["wandb"]["log_wandb"] == "True":
         import wandb
         wandb.init(entity=config['wandb']['entity'], project=config['wandb']['project'])
+
+    #set path to directories from config
+    DATA_PATH = config['path']['data_path']
+    LOG_PATH = config["path"]["log_path"]
+    REPO_PATH = config["path"]["repo_path"]
     
     #create logging dir
     log_spot = config["logging"]["log_nr"]
     log_dir = f'{LOG_PATH}{log_spot}/'
+
+    #extract lists from config
+    var_list = config["cl"]["var_list"].split(',')
+    epoch_lengths = config["trainer"]["max_epochs"].split(',')
+    epoch_lengths = np.cumsum(np.array([int(i) for i in epoch_lengths]))
+
+    #read patch size and round to multiple of 32 (unet requires divisible by 32)
+    patch_size = int(config['cl']['patch_size'])
+    if patch_size % 32 != 0:
+            patch_size += 32 - patch_size % 32 
+
+
+    # base training on full map
+    if config['cl']['mode'] == 'base':
+        DATA_PATH = f'{DATA_PATH}'
+
+    # training on patches
+    elif config['cl']['mode'] == 'patch':
+        DATA_PATH = f'{DATA_PATH}{patch_size}/'
+
+        #only extract data if requested
+        if config['cl']['extract'] == 'True':
+            from utils import cl_prep
+            cl_prep.process_all_images(patch_size= patch_size, 
+                                        stride = int(config['cl']['stride']), vars = var_list, 
+                                        max_exp_patches = int(config['cl']['max_nr_patches']), mode = 'True')
+
+
+
+    # cl
+    elif config['cl']['mode'] == 'cl':
+        mode = 'cl'
+
+        #only if new curriculum or different patch size
+        if config['cl']['extract'] == 'True':
+
+            try:
+                #clear folder for new curriculum
+                print('Clear folder for new Curriculum')
+                shutil.rmtree(f'{DATA_PATH}cl/{patch_size}/')
+                print('Folder emptied.')
+            except:
+                pass
+
+            #extract data and create training stages
+            from utils import cl_prep
+            cl_prep.process_all_images(patch_size= patch_size, 
+                                        stride = int(config['cl']['stride']), vars = var_list, 
+                                        max_exp_patches = int(config['cl']['max_nr_patches']), mode = 'False')
 
     if not os.path.exists(log_dir):
         print(f'Create {log_dir}')
@@ -365,13 +356,13 @@ if __name__ == "__main__":
     )
 
     wandb_logger = None
-    if log_wandb:
+    if config["wandb"]["log_wandb"]=="True":
         wandb_logger = WandbLogger(entity=config['wandb']['entity'], log_model=True, project=config['wandb']['project'])
 
     #vanilla training
     if mode == 'base':
         early_stopping_callback = EarlyStopping(monitor="val_loss", min_delta=0.00, patience=10)
-        data_module = Data()
+        data_module = Data(config=config, mode=mode, path=DATA_PATH, patch_size=patch_size)
         
         # set up task and insert hyperparameters from config file
         task = Model_Task(
@@ -385,7 +376,7 @@ if __name__ == "__main__":
         learning_rate=float(config["model"]["learning_rate"]),
         learning_rate_schedule_patience=int(
             config["model"]["learning_rate_schedule_patience"]),
-        log_wandb=log_wandb)
+        log_wandb=config["wandb"]["log_wandb"]=="True")
 
         #generate Trainer and fit on data
         trainer = Trainer(
@@ -400,7 +391,7 @@ if __name__ == "__main__":
 
         trainer.fit(task, datamodule=data_module)
         trainer.test(model=task, datamodule = data_module)
-        if log_wandb:
+        if config["log_wandb"]:
             wandb.finish()
     
     #cl learning: loop over stages and read and write from same checkpoint store
@@ -410,7 +401,7 @@ if __name__ == "__main__":
 
         for i in range(nr_stages):
             print(f'Starting training round {i}')
-            data_module = Data(stage = i+1)
+            data_module = Data(mode=mode, path=DATA_PATH, stage = i+1)
             stage_nr = i+1
 
     
@@ -426,7 +417,7 @@ if __name__ == "__main__":
             learning_rate=float(config["model"]["learning_rate"]),
             learning_rate_schedule_patience=int(
                 config["model"]["learning_rate_schedule_patience"]),
-            log_wandb=False)
+            log_wandb=config["log_wandb"])
 
             if i == 0: #first round, no checkpoints available yet
                 trainer = Trainer(
@@ -460,8 +451,71 @@ if __name__ == "__main__":
 
         #test model and finish wandb
         trainer.test(model=task, datamodule = data_module)
-        if log_wandb:
+        if config["log_wandb"]:
             wandb.finish()
+
+
+def curriculum_evaluate(config):
+    #set path to directories from config
+    DATA_PATH = config['path']['data_path']
+    LOG_PATH = config["path"]["log_path"]
+    REPO_PATH = config["path"]["repo_path"]
+    
+    #create logging dir
+    log_spot = config["logging"]["log_nr"]
+    log_dir = f'{LOG_PATH}{log_spot}/'
+
+    # checkpoints and loggers
+    checkpoint_callback = ModelCheckpoint(
+            monitor=None,#always take last checkpoint, not best for cl
+            dirpath=log_dir + "/checkpoints",
+            save_top_k=1,
+            save_last=True,
+    )
+    wandb_logger = None
+    if config["log_wandb"]:
+        wandb_logger = WandbLogger(entity=config['wandb']['entity'], log_model=True, project=config['wandb']['project'])
+
+    checkpoints = os.listdir(f'{log_dir}checkpoints')
+    checkpoint = checkpoints[-1]
+
+    #extract lists from config
+    var_list = config["cl"]["var_list"].split(',')
+    epoch_lengths = config["trainer"]["max_epochs"].split(',')
+    epoch_lengths = np.cumsum(np.array([int(i) for i in epoch_lengths]))
+
+    trainer = Trainer(
+                callbacks=[checkpoint_callback],
+                logger= wandb_logger,
+                accelerator="gpu",
+                max_epochs=int(epoch_lengths[i]),
+                max_time=config["trainer"]["max_time"],
+                auto_lr_find=config["trainer"]["auto_lr_find"] == "True",
+                auto_scale_batch_size=config["trainer"]["auto_scale_batch_size"] == "True",
+                )
+
+    task = Model_Task(
+            segmentation_model=config["model"]["segmentation_model"],
+            encoder_name=config["model"]["backbone"],
+            encoder_weights="imagenet" if config["model"]["pretrained"] == "True" else "None",
+            in_channels=len(var_list),
+            num_classes=int(config["model"]["num_classes"]),
+            loss=config["model"]["loss"],
+            ignore_index=None,
+            learning_rate=float(config["model"]["learning_rate"]),
+            learning_rate_schedule_patience=int(
+                config["model"]["learning_rate_schedule_patience"]),
+            log_wandb=config["log_wandb"])
+
+    patch_size = int(config['cl']['patch_size'])
+    if patch_size % 32 != 0:
+            patch_size += 32 - patch_size % 32 
+
+    nr_stages = int(config["cl"]["nr_stages"])
+
+    data_module = Data(mode=config["cl"]["mode"], path=DATA_PATH, patch_size=patch_size, stage=nr_stages)
+
+    trainer.test(model=task, datamodule = data_module)
 
 
     

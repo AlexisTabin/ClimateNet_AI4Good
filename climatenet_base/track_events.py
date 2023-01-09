@@ -27,7 +27,7 @@ def track_events(class_masks_xarray, minimum_time_length=5,
         """Returns an event mask with ids assigned to the connected components at time"""
         class_mask = class_masks[time]  # class masks of assigned time stamp
         # data structure for ids of connected components
-        event_mask = np.zeros(np.shape(class_mask)).astype(np.int)
+        event_mask = np.zeros(np.shape(class_mask)).astype(int)
         next_id = 1
         for i in range(np.shape(class_mask)[0]):
             for j in range(np.shape(class_mask)[1]):
@@ -60,7 +60,7 @@ def track_events(class_masks_xarray, minimum_time_length=5,
     pool = Pool(psutil.cpu_count(logical=False))
     event_masks = np.array(pool.map(
         identify_components,
-        range(len(class_masks)))).astype(np.int)
+        range(len(class_masks)))).astype(int)
 
     def size_is_smaller_threshold(mask, i, j, threshold):
         """Returns True iff the size of the connected component that (i, j) is part of is smaller threshold"""

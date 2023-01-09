@@ -25,7 +25,7 @@ def analyze_events(event_masks_xarray, class_masks_xarray, results_dir):
     # create results_dir if it doesn't exist
     pathlib.Path(results_dir).mkdir(parents=True, exist_ok=True)
 
-    cartopy.config['pre_existing_data_dir'] = '/cluster/work/igp_psr/ai4good/group-1b/data/cartopy-data/'
+    cartopy.config['pre_existing_data_dir'] = "../cartopy-data"
     class_masks = class_masks_xarray.values
     event_masks = event_masks_xarray.values
 
@@ -193,44 +193,44 @@ def analyze_events(event_masks_xarray, class_masks_xarray, results_dir):
         plt.savefig(results_dir + f"histogram_lifetime_{event_class:s}")
 
         # travel distance calculation
-        termination_centroids = []
-        genesis_centroids = []
-        for i in range(len(this_class_ids)):
-            termination_centroids.append(
-                centroid_per_id_per_time[termination_times[i]][list(this_class_ids)[i]])
-            genesis_centroids.append(
-                centroid_per_id_per_time[genesis_times[i]][list(this_class_ids)[i]])
+        # termination_centroids = []
+        # genesis_centroids = []
+        # for i in range(len(this_class_ids)):
+        #     termination_centroids.append(
+        #         centroid_per_id_per_time[termination_times[i]][list(this_class_ids)[i]])
+        #     genesis_centroids.append(
+        #         centroid_per_id_per_time[genesis_times[i]][list(this_class_ids)[i]])
 
-        distances = np.array([hs.haversine(pixel_to_degree(pos1), pixel_to_degree(pos2))
-                              for pos1, pos2 in zip(termination_centroids, genesis_centroids)])
+        # distances = np.array([hs.haversine(pixel_to_degree(pos1), pixel_to_degree(pos2))
+        #                       for pos1, pos2 in zip(termination_centroids, genesis_centroids)])
 
-        # travel distance histogram
-        plt.figure(dpi=100)
-        plt.hist(distances, bins=np.arange(0, 10000, 500),
-                 rwidth=0.85, color='#607c8e')
-        plt.title(f"Travel distance histogram of {event_class.upper():s}s", fontdict={
-                  'fontsize': 16})
-        plt.rc('xtick', labelsize=8)
-        plt.rc('ytick', labelsize=8)
-        plt.xlabel("distance in km")
-        plt.xticks(np.arange(0, 10001, 2500))
-        plt.xlim(0, 10000)
-        plt.ylabel("Count")
-        plt.savefig(results_dir + f"histogram_travel_distance_{event_class:s}")
+        # # travel distance histogram
+        # plt.figure(dpi=100)
+        # plt.hist(distances, bins=np.arange(0, 10000, 500),
+        #          rwidth=0.85, color='#607c8e')
+        # plt.title(f"Travel distance histogram of {event_class.upper():s}s", fontdict={
+        #           'fontsize': 16})
+        # plt.rc('xtick', labelsize=8)
+        # plt.rc('ytick', labelsize=8)
+        # plt.xlabel("distance in km")
+        # plt.xticks(np.arange(0, 10001, 2500))
+        # plt.xlim(0, 10000)
+        # plt.ylabel("Count")
+        # plt.savefig(results_dir + f"histogram_travel_distance_{event_class:s}")
 
         # speed histogram
-        plt.figure(dpi=100)
-        plt.hist(distances / (3 * lifetimes), bins=np.arange(0, 100, 5),
-                 rwidth=0.85, color='#607c8e')  # multiplied by 3 to get result in km/h)
-        plt.title(f"Speed histogram of {event_class.upper():s}s", fontdict={
-                  'fontsize': 16})
-        plt.rc('xtick', labelsize=8)
-        plt.rc('ytick', labelsize=8)
-        plt.xlabel("speed in km/h")
-        plt.xticks(np.arange(0, 101, 25))
-        plt.xlim(0, 100)
-        plt.ylabel("Count")
-        plt.savefig(results_dir + f"histogram_speed_{event_class:s}")
+        # plt.figure(dpi=100)
+        # plt.hist(distances / (3 * lifetimes), bins=np.arange(0, 100, 5),
+        #          rwidth=0.85, color='#607c8e')  # multiplied by 3 to get result in km/h)
+        # plt.title(f"Speed histogram of {event_class.upper():s}s", fontdict={
+        #           'fontsize': 16})
+        # plt.rc('xtick', labelsize=8)
+        # plt.rc('ytick', labelsize=8)
+        # plt.xlabel("speed in km/h")
+        # plt.xticks(np.arange(0, 101, 25))
+        # plt.xlim(0, 100)
+        # plt.ylabel("Count")
+        # plt.savefig(results_dir + f"histogram_speed_{event_class:s}")
 
     # set cartopy background dir to include blue marble
     os.environ['CARTOPY_USER_BACKGROUNDS'] = str(
@@ -284,19 +284,19 @@ def analyze_events(event_masks_xarray, class_masks_xarray, results_dir):
         mymap.get_figure().savefig(filepath, bbox_inches="tight",
                                    facecolor='w')  # raises an error
 
-    print('generating frequency maps..', flush=True)
-    visualize_frequency_map(genesis_frequency_tc, "Genesis frequency map of TCs",
-                            "Frequency in events per month", results_dir + "genesis_frequency_tc")
-    visualize_frequency_map(genesis_frequency_ar, "Genesis frequency map of ARs",
-                            "Frequency in events per month", results_dir + "genesis_frequency_ar")
-    visualize_frequency_map(termination_frequency_tc, "Termination frequency map of TCs",
-                            "Frequency in events per month", results_dir + "termination_frequency_tc")
-    visualize_frequency_map(termination_frequency_ar, "Termination frequency map of ARs",
-                            "Frequency in events per month", results_dir + "termination_frequency_ar")
+    # print('generating frequency maps..', flush=True)
+    # visualize_frequency_map(genesis_frequency_tc, "Genesis frequency map of TCs",
+    #                         "Frequency in events per month", results_dir + "genesis_frequency_tc")
+    # visualize_frequency_map(genesis_frequency_ar, "Genesis frequency map of ARs",
+    #                         "Frequency in events per month", results_dir + "genesis_frequency_ar")
+    # visualize_frequency_map(termination_frequency_tc, "Termination frequency map of TCs",
+    #                         "Frequency in events per month", results_dir + "termination_frequency_tc")
+    # visualize_frequency_map(termination_frequency_ar, "Termination frequency map of ARs",
+    #                         "Frequency in events per month", results_dir + "termination_frequency_ar")
 
-    visualize_frequency_map(100 * ((class_masks == 1) * (event_masks != 0)).sum(axis=0) / event_masks.shape[0],
-                            "Global frequency map of TCs", "Frequency in % of time steps",
-                            results_dir + "global_frequency_tc")
-    visualize_frequency_map(100 * ((class_masks == 2) * (event_masks != 0)).sum(axis=0) / event_masks.shape[0],
-                            "Global frequency map of ARs", "Frequency in % of time steps",
-                            results_dir + "global_frequency_ar")
+    # visualize_frequency_map(100 * ((class_masks == 1) * (event_masks != 0)).sum(axis=0) / event_masks.shape[0],
+    #                         "Global frequency map of TCs", "Frequency in % of time steps",
+    #                         results_dir + "global_frequency_tc")
+    # visualize_frequency_map(100 * ((class_masks == 2) * (event_masks != 0)).sum(axis=0) / event_masks.shape[0],
+    #                         "Global frequency map of ARs", "Frequency in % of time steps",
+    #                         results_dir + "global_frequency_ar")
