@@ -1,7 +1,7 @@
 {
-    "architecture": "erfnet",
-    "save_dir": "./checkpoints/erfnet/",
-    "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
+    "test": "yomec",
+    "architecture": "cgnet",
+    "save_dir": "/cluster/scratch/atabin/checkpoints/cgnet/",
     "seed": 42,
     "lr": 0.001,
     "train_batch_size": 4,
@@ -31,8 +31,10 @@
         "Atmospheric River"
     ],
     "is_already_trained": false,
+    "checkpoint": "checkpoints/cgnet.pth",
+    "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "with_analysis": true,
     "with_visualization": true,
     "cuda": true,
-    "description": "The basic ErfNet model."
+    "description": "The basic CGNet model. You can use this config to train your own model, or load it with our trained weights."
 }

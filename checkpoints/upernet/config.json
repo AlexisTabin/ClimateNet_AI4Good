@@ -1,6 +1,6 @@
 {
-    "architecture": "erfnet",
-    "save_dir": "./checkpoints/erfnet/",
+    "architecture": "upernet",
+    "save_dir": "./checkpoints/upernet/",
     "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "seed": 42,
     "lr": 0.001,
@@ -34,5 +34,5 @@
     "with_analysis": true,
     "with_visualization": true,
     "cuda": true,
-    "description": "The basic ErfNet model."
+    "description": "The basic UperNet model."
 }

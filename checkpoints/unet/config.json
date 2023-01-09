@@ -1,6 +1,6 @@
 {
-    "architecture": "erfnet",
-    "save_dir": "./checkpoints/erfnet/",
+    "architecture": "unet",
+    "save_dir": "./checkpoints/unet/",
     "data_dir": "/cluster/work/igp_psr/ai4good/group-1b/data/",
     "seed": 42,
     "lr": 0.001,
@@ -31,8 +31,9 @@
         "Atmospheric River"
     ],
     "is_already_trained": false,
+    "checkpoint": "checkpoints/cgnet.pth",
     "with_analysis": true,
     "with_visualization": true,
     "cuda": true,
-    "description": "The basic ErfNet model."
+    "description": "The basic UNet"
 }
