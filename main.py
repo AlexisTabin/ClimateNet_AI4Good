@@ -6,7 +6,7 @@ from configparser import ConfigParser
 
 def run(args):
     if args.model == "base":
-        config = Config('config.json')
+        config = Config('base/config.json')
         if args.mode == "train":
             train(config)
         else:
