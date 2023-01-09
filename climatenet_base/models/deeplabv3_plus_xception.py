@@ -10,8 +10,8 @@ import torch.nn as nn
 from itertools import chain
 from torchvision import models
 import torch.nn.functional as F
-from climatenet.models.base_model import BaseModel
-from climatenet.utils.helpers import initialize_weights,set_trainable
+from climatenet_base.models.base_model import BaseModel
+from climatenet_base.utils.helpers import initialize_weights,set_trainable
 
 '''
 'xception_65.pth'URL:https://github.com/zhangtianlun12/deeplabv3-/releases/download/v0.1/xception_65.pth

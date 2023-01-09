@@ -1,3 +1,11 @@
 __pycache__/
 *.pth
 wandb
+.idea/
+Untitled-1.ipynb
+climatenet_plus
+data
+experiments
+io
+profile.json
+test.html

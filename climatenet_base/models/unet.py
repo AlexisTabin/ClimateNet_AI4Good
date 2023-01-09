@@ -7,12 +7,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from climatenet.utils.helpers import initialize_weights, set_trainable
+from climatenet_base.utils.helpers import initialize_weights, set_trainable
 from torchvision.models import resnet
 from tqdm import tqdm
 
-from climatenet.models.base_model import BaseModel
-from climatenet.models.modules import *
+from climatenet_base.models.base_model import BaseModel
+from climatenet_base.models.modules import *
 
 
 def x2conv(in_channels, out_channels, inner_channels=None):

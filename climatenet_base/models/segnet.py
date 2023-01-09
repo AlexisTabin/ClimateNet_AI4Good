@@ -3,8 +3,8 @@ import torch.nn as nn
 from itertools import chain
 from torchvision import models
 import torch.nn.functional as F
-from climatenet.utils.helpers import set_trainable
-from climatenet.models.base_model import BaseModel
+from climatenet_base.utils.helpers import set_trainable
+from climatenet_base.models.base_model import BaseModel
 
 
 class SegNet(BaseModel):

@@ -234,7 +234,7 @@ def analyze_events(event_masks_xarray, class_masks_xarray, results_dir):
 
     # set cartopy background dir to include blue marble
     os.environ['CARTOPY_USER_BACKGROUNDS'] = str(
-        os.getcwd() + '/climatenet/bluemarble')
+        os.getcwd() + '/climatenet_base/bluemarble')
 
     def map_instance(title):
         """Returns a matplotlib instance with bluemarble background"""

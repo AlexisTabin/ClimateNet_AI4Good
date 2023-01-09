@@ -16,7 +16,7 @@ Path to directory on Euler cluster : `/cluster/work/igp_psr/ai4good/group-1b`
 
 ```bash
 conda env create -f environment.yml
-conda activate climatenet
+conda activate climatenet_base
 ```
 
 ### To update the environment

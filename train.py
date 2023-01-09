@@ -1,12 +1,12 @@
 import traceback
 from os import path
 
-from climatenet.analyze_events import analyze_events
-from climatenet.models.trainer import MODELS, Trainer
-from climatenet.track_events import track_events
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.utils import Config
-from climatenet.visualize_events import visualize_events
+from climatenet_base.analyze_events import analyze_events
+from climatenet_base.models.trainer import MODELS, Trainer
+from climatenet_base.track_events import track_events
+from climatenet_base.utils.data import ClimateDataset, ClimateDatasetLabeled
+from climatenet_base.utils.utils import Config
+from climatenet_base.visualize_events import visualize_events
 
 
 def run():

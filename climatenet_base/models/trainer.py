@@ -10,17 +10,17 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from climatenet.models.cgnet import CGNet
-from climatenet.models.unet import UNetResnet, UNet
-from climatenet.models.upernet import UperNet
-from climatenet.models.segnet import SegResNet, SegNet
-from climatenet.models.erfnet import ERFNet
-from climatenet.models.deeplabv3_plus_xception import DeepLab
-from climatenet.models.modules import *
-from climatenet.utils.data import ClimateDataset, ClimateDatasetLabeled
-from climatenet.utils.losses import jaccard_loss, dice_loss
-from climatenet.utils.metrics import get_cm, get_iou_perClass
-from climatenet.utils.utils import Config
+from climatenet_base.models.cgnet import CGNet
+from climatenet_base.models.unet import UNetResnet, UNet
+from climatenet_base.models.upernet import UperNet
+from climatenet_base.models.segnet import SegResNet, SegNet
+from climatenet_base.models.erfnet import ERFNet
+from climatenet_base.models.deeplabv3_plus_xception import DeepLab
+from climatenet_base.models.modules import *
+from climatenet_base.utils.data import ClimateDataset, ClimateDatasetLabeled
+from climatenet_base.utils.losses import jaccard_loss, dice_loss
+from climatenet_base.utils.metrics import get_cm, get_iou_perClass
+from climatenet_base.utils.utils import Config
 
 MODELS = {
     'upernet': UperNet,

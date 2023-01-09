@@ -1,4 +1,4 @@
-name: climatenet
+name: climatenet_base
 channels:
   - pytorch
   - nvidia

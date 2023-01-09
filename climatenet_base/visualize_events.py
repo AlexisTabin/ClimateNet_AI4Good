@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from multiprocessing import Pool
 import psutil
-from climatenet.utils.data import ClimateDataset
+from climatenet_base.utils.data import ClimateDataset
 
 
 def visualize_events(event_masks_xarray, input_data: ClimateDataset, png_dir):
@@ -34,7 +34,7 @@ def visualize_events(event_masks_xarray, input_data: ClimateDataset, png_dir):
 
     # set cartopy background dir to include blue marble
     os.environ['CARTOPY_USER_BACKGROUNDS'] = str(
-        os.getcwd() + '/climatenet/bluemarble')
+        os.getcwd() + '/climatenet_base/bluemarble')
 
     def map_instance():
         """Returns a matplotlib instance with bluemarble background"""

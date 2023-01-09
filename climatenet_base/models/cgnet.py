@@ -14,7 +14,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from climatenet.models.modules import *
+from climatenet_base.models.modules import *
 
 
 class CGNet(nn.Module):

@@ -4,9 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
-from climatenet.models.base_model import BaseModel
-from climatenet.models.modules import *
-from climatenet.utils.helpers import initialize_weights, set_trainable
+from climatenet_base.models.base_model import BaseModel
+from climatenet_base.models.modules import *
+from climatenet_base.utils.helpers import initialize_weights, set_trainable
 
 
 class UperNet(BaseModel):

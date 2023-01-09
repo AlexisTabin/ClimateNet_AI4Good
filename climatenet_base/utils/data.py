@@ -1,7 +1,7 @@
 from torch.utils.data import Dataset
 from os import listdir, path
 import xarray as xr
-from climatenet.utils.utils import Config
+from climatenet_base.utils.utils import Config
 
 
 class ClimateDataset(Dataset):
